@@ -19,9 +19,23 @@
 
     const tooBig = (file) => file.size > globalThis.ShooLib.IMPORT_MAX_CHARS * 4;
     async function runFile(file) {
-      if (tooBig(file)) return render({ format: "too-big", found: 0 });
+      if (tooBig(file)) {
+        const head = await file.slice(0, 8000).text().catch(() => "\u0000");
+        return render({ format: globalThis.ShooLib.looksBinary(head) ? "unknown" : "too-big", found: 0 });
+      }
       return run(await file.text());
     }
+
+    let numbers = null;
+    const n = (v) => {
+      try {
+        numbers ||= new Intl.NumberFormat(chrome.i18n.getUILanguage());
+      } catch {
+        numbers = new Intl.NumberFormat();
+      }
+      return numbers.format(v);
+    };
+    const taken = (res) => Boolean(res && res.format !== "too-big" && res.found);
 
     function render(res) {
       if (!res) {
@@ -36,10 +50,10 @@
         result.replaceChildren(el("p", {}, t("importNothing")));
         return;
       }
-      const lines = [el("p", { class: "import-added" }, t("importResult", res.added.channels, res.added.words))];
-      if (res.skipped.patterns) lines.push(el("p", { class: "muted" }, t("importSkippedPatterns", res.skipped.patterns)));
-      if (res.skipped.other) lines.push(el("p", { class: "muted" }, t("importSkippedOther", res.skipped.other)));
-      if (res.idOnly) lines.push(el("p", { class: "muted" }, t("importIdOnly", res.idOnly)));
+      const lines = [el("p", { class: "import-added" }, t("importResult", n(res.added.channels), n(res.added.words)))];
+      if (res.skipped.patterns) lines.push(el("p", { class: "muted" }, t("importSkippedPatterns", n(res.skipped.patterns))));
+      if (res.skipped.other) lines.push(el("p", { class: "muted" }, t("importSkippedOther", n(res.skipped.other))));
+      if (res.idOnly) lines.push(el("p", { class: "muted" }, t("importIdOnly", n(res.idOnly))));
       if (res.added.channels || res.added.words) {
         lines.push(
           el("button", { type: "button", class: "link import-undo", onclick: async () => {
@@ -79,7 +93,7 @@
     function pasteBox() {
       const area = el("textarea", { rows: "3", placeholder: t("importBox"), "aria-label": t("importBox"), spellcheck: "false" });
       const add = el("button", { type: "button", class: "secondary", disabled: true, onclick: async () => {
-        if (await run(area.value)) clear();
+        if (taken(await run(area.value))) clear();
       } }, t("importAdd"));
       const sync = () => (add.disabled = !area.value.trim());
       const clear = () => {
@@ -90,7 +104,7 @@
       area.addEventListener("input", sync);
       area.addEventListener("paste", () => setTimeout(async () => {
         sync();
-        if (await run(area.value)) clear();
+        if (taken(await run(area.value))) clear();
       }, 0));
       const box = el("div", { class: "paste" }, area, add);
       dropOn(box);
