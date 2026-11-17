@@ -23,8 +23,13 @@ const control = () =>
   });
 const ours = () => page.evaluate(() => [...document.querySelectorAll(".shoo-page, .shoo-line, .shoo-reason, .shoo-menu, .shoo-all")].filter((n) => n.closest("#movie_player, ytd-player")).length);
 
-await goSearch(page, QUERY);
-const href = await page.evaluate((h) => document.querySelector(`ytd-search ytd-video-renderer:has(#channel-info a[href="/${h}"]) a#thumbnail`)?.getAttribute("href"), HANDLE);
+const searched = await goSearch(page, QUERY).then(() => true, (e) => String(e).slice(0, 160));
+const href = searched === true ? await page.evaluate((h) => document.querySelector(`ytd-search ytd-video-renderer:has(#channel-info a[href="/${h}"]) a#thumbnail`)?.getAttribute("href"), HANDLE) : null;
+if (!href) {
+  check(`live: YouTube search for "${QUERY}" returned no ${HANDLE} video, the watch-page checks can't run`, null, { search: searched === true ? "no matching card" : searched });
+  await finish(ctx, check);
+  process.exit();
+}
 const resultsUrl = page.url();
 await page.goto(`https://www.youtube.com${href.split("&")[0]}`, { waitUntil: "domcontentloaded", referer: resultsUrl });
 const first = await until(control, (c) => c?.texts?.length === 1, 15000);

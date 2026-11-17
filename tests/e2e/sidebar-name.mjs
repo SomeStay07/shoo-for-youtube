@@ -7,10 +7,15 @@ await setList(ctx, null);
 const page = ctx.context.pages()[0] || (await ctx.context.newPage());
 const HANDLE = "@veritasium";
 
-await goSearch(page, "veritasium black holes");
+const searched = await goSearch(page, "veritasium black holes").then(() => true, (e) => String(e).slice(0, 160));
 const sel = `ytd-search ytd-video-renderer:has(#channel-info a[href="/${HANDLE}"])`;
-const watchHref = await page.evaluate((s) => document.querySelector(`${s} a#thumbnail`)?.getAttribute("href"), sel);
-await page.locator(sel).first().waitFor({ state: "visible", timeout: 15000 });
+const watchHref = searched === true ? await page.evaluate((s) => document.querySelector(`${s} a#thumbnail`)?.getAttribute("href"), sel) : null;
+const shown = Boolean(watchHref) && (await page.locator(sel).first().waitFor({ state: "visible", timeout: 15000 }).then(() => true, () => false));
+if (!shown) {
+  check(`live: YouTube search returned no ${HANDLE} video, the sidebar checks can't run`, null, { search: searched === true ? "no matching card" : searched });
+  await finish(ctx, check);
+  process.exit();
+}
 await sleep(1000);
 await page.locator(sel).first().hover({ position: { x: 600, y: 60 } });
 await sleep(300);

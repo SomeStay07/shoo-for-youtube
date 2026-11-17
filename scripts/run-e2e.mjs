@@ -9,12 +9,12 @@ const LOGS = join(ROOT, ".e2e-out/gate");
 const SUITES = {
   fast: [
     ["block-search", "2"],
-    ["sidebar-name", "4"],
+    ["sidebar-name", "4", { nt: /NOT TESTABLE live: / }],
     ["collab-fixture", "5"],
     ["list-page", "8"],
     ["welcome", "9"],
     ["show-hidden", "10"],
-    ["watch-channel", "11", { nt: /needs playback/ }],
+    ["watch-channel", "11", { nt: /needs playback|NOT TESTABLE live: / }],
     ["health", "12"],
     ["playlist", "r1", { nt: /NOT TESTABLE live: / }],
     ["stick", "3"],
