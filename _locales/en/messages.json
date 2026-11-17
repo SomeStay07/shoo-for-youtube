@@ -1,0 +1,287 @@
+{
+  "extName": {
+    "message": "Shoo for YouTube: Block Channels & Title Keywords"
+  },
+  "extNameShort": {
+    "message": "Shoo for YouTube: Block Channels"
+  },
+  "extDescription": {
+    "message": "Block YouTube channels in one click, in search and next to the player. Title keywords too. Imports old blocker lists."
+  },
+  "cardHide": {
+    "message": "Hide videos from $CHANNEL$",
+    "placeholders": {
+      "channel": {
+        "content": "$1"
+      }
+    }
+  },
+  "cardHideTip": {
+    "message": "Shoo: hide videos from $CHANNEL$",
+    "placeholders": {
+      "channel": {
+        "content": "$1"
+      }
+    }
+  },
+  "cardHideCollab": {
+    "message": "Hide videos from…"
+  },
+  "cardHidden": {
+    "message": "Shoo hid videos from $CHANNEL$",
+    "placeholders": {
+      "channel": {
+        "content": "$1"
+      }
+    }
+  },
+  "cardNotSaved": {
+    "message": "Not saved. Reload this tab and try again."
+  },
+  "undo": {
+    "message": "Undo"
+  },
+  "unhideChannel": {
+    "message": "Stop hiding this channel"
+  },
+  "unhideWord": {
+    "message": "Remove word from list"
+  },
+  "pageHide": {
+    "message": "Hide this channel's videos"
+  },
+  "pageHidden": {
+    "message": "Shoo hides this channel in search and next to the player"
+  },
+  "pageBack": {
+    "message": "Back to results"
+  },
+  "reasonChannel": {
+    "message": "Hidden: channel $CHANNEL$",
+    "placeholders": {
+      "channel": {
+        "content": "$1"
+      }
+    }
+  },
+  "reasonWord": {
+    "message": "Hidden: word \"$WORD$\"",
+    "placeholders": {
+      "word": {
+        "content": "$1"
+      }
+    }
+  },
+  "allHidden": {
+    "message": "Shoo hid all results on this page: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "showThem": {
+    "message": "Show them"
+  },
+  "popupOn": {
+    "message": "Shoo is on"
+  },
+  "popupCounts": {
+    "message": "Channels: $CHANNELS$ · Words: $WORDS$",
+    "placeholders": {
+      "channels": {
+        "content": "$1"
+      },
+      "words": {
+        "content": "$2"
+      }
+    }
+  },
+  "popupShowHidden": {
+    "message": "Show hidden on this page ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupNothingHere": {
+    "message": "Nothing hidden on this page"
+  },
+  "popupRevealed": {
+    "message": "Hidden videos are shown on this page"
+  },
+  "popupHideAgain": {
+    "message": "Hide them again"
+  },
+  "reloadTab": {
+    "message": "Reload this tab so Shoo works here"
+  },
+  "popupEmpty": {
+    "message": "Nothing hidden yet: hover a video and click ⊘"
+  },
+  "popupManage": {
+    "message": "Edit list"
+  },
+  "popupBroken": {
+    "message": "Looks like YouTube changed something. Channels you hid may show up again: $SURFACES$.",
+    "placeholders": {
+      "surfaces": {
+        "content": "$1"
+      }
+    }
+  },
+  "surfaceSearch": {
+    "message": "in search results"
+  },
+  "surfaceSubs": {
+    "message": "in Subscriptions"
+  },
+  "surfaceHome": {
+    "message": "on Home"
+  },
+  "surfaceSidebar": {
+    "message": "next to the player"
+  },
+  "report": {
+    "message": "Report a problem"
+  },
+  "knownIssues": {
+    "message": "Known breakages and fixes"
+  },
+  "titleBroken": {
+    "message": "Shoo: YouTube may have changed something. Open for details."
+  },
+  "welcomeTitle": {
+    "message": "Hide a channel once, and Shoo hides its videos in search and next to the player"
+  },
+  "welcomeImportFirst": {
+    "message": "If you used another blocker, export your list from it first: removing that extension deletes its list. If it's already gone, paste channel links or names into the box, one per line."
+  },
+  "welcomeStepsBlockTube": {
+    "message": "BlockTube: open its settings and export. You get a file called blocktube_backup.json."
+  },
+  "welcomeStepsChannelBlocker": {
+    "message": "Channel Blocker: open its settings, go to import and export, and export your list. You get a .save file."
+  },
+  "importBox": {
+    "message": "Drop the file here or paste the list"
+  },
+  "importChoose": {
+    "message": "Choose a file"
+  },
+  "importAdd": {
+    "message": "Add"
+  },
+  "importResult": {
+    "message": "Channels added: $CHANNELS$ · words: $WORDS$",
+    "placeholders": {
+      "channels": {
+        "content": "$1"
+      },
+      "words": {
+        "content": "$2"
+      }
+    }
+  },
+  "importSkippedPatterns": {
+    "message": "Regex patterns skipped: $COUNT$ (Shoo takes plain words only)",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "importSkippedOther": {
+    "message": "Other entries skipped: $COUNT$ (single videos, comment filters, exceptions, JavaScript filters)",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "importIdOnly": {
+    "message": "Channels with an ID but no name: $COUNT$. In most places Shoo can't spot them yet. If one of their videos still shows up, hide it once and Shoo will remember the channel.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "importUndo": {
+    "message": "Undo import"
+  },
+  "importNothing": {
+    "message": "No channels or words found here. Try the export file from your old blocker, or one channel per line."
+  },
+  "importTooBig": {
+    "message": "This list is too long. Shoo takes up to 20,000 channels and words at once."
+  },
+  "welcomePin": {
+    "message": "Pin Shoo from the puzzle icon in the toolbar. When Shoo sees that YouTube changed something and hidden channels may come back, Shoo's icon shows \"!\"."
+  },
+  "welcomeReloadTabs": {
+    "message": "Reload open YouTube tabs ($COUNT$) so Shoo works there",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "welcomeReloadDone": {
+    "message": "Reloaded"
+  },
+  "welcomeHowTo": {
+    "message": "To hide a channel, hover one of its videos and click ⊘. To add words or bring a channel back, open Shoo's menu, then \"Edit list\"."
+  },
+  "welcomeOpenYouTube": {
+    "message": "Open YouTube"
+  },
+  "listTitle": {
+    "message": "Hidden channels and words"
+  },
+  "listFilter": {
+    "message": "Find in the list"
+  },
+  "listChannels": {
+    "message": "Channels"
+  },
+  "listWords": {
+    "message": "Words"
+  },
+  "listAddWord": {
+    "message": "Add a word or phrase"
+  },
+  "listWordLabel": {
+    "message": "Word"
+  },
+  "listWordHint": {
+    "message": "Checks video titles only. A word also hides longer words that start with it: \"alpha\" hides \"alphas\" too. Words of 3 letters or fewer match whole words only: \"AI\" hides \"AI tools\", not \"air\"."
+  },
+  "listAddMany": {
+    "message": "Paste a list"
+  },
+  "listImport": {
+    "message": "Import a file"
+  },
+  "listExport": {
+    "message": "Export to a file"
+  },
+  "listRemoved": {
+    "message": "Removed from the list: $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "listIdOnlyRow": {
+    "message": "No name yet: Shoo misses this channel in most places. Hide one of its videos once and Shoo will remember it."
+  },
+  "listMisses": {
+    "message": "Next to the player and in collabs, YouTube shows only a channel's name, so Shoo matches by name there. It may also hide another channel with the same name, and it can miss a renamed channel until it sees one of its videos in search. Channels added by name alone (pasted names, Channel Blocker imports, hides from next to the player) are matched by name everywhere and aren't updated after a rename. When a collab names some channels and only counts the rest, Shoo can't see the counted ones. In the row of Shorts in search, only words work."
+  },
+  "listEmpty": {
+    "message": "The list is empty. Hide a channel from one of its videos on YouTube, or add a word above."
+  }
+}

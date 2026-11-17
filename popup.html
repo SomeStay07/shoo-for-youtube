@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title data-i18n="extNameShort"></title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <img src="icons/icon-48.png" srcset="icons/icon-48.png 1x, icons/icon-96.png 2x" alt="" width="28" height="28">
+    <div>
+      <p id="status" aria-live="polite"></p>
+      <p id="counts" class="muted"></p>
+    </div>
+  </header>
+  <div id="health" class="warn" hidden></div>
+  <div id="here"></div>
+  <a id="manage" href="list.html" target="_blank" data-i18n="popupManage"></a>
+  <a id="report" target="_blank" rel="noopener" data-i18n="report" hidden></a>
+  <script src="lib.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,397 @@
+html:not([data-shoo-reveal]) [data-shoo-hide]:not([data-shoo-slot]) {
+  display: none !important;
+}
+
+[data-shoo-slot] > :not(.shoo-line) {
+  display: none !important;
+}
+
+[data-shoo-card],
+html[data-shoo-reveal] [data-shoo-hide] {
+  position: relative;
+}
+
+/* dimmed cards in "Show hidden": 40%, 80% while pointed at or focused so they can be read.
+   The hover rule only sets a variable on the box (attribute bucket), no new universal selector. */
+html[data-shoo-reveal] [data-shoo-hide] > :not(.shoo-reason) {
+  opacity: var(--shoo-dim, 0.4);
+  transition: opacity 0.15s;
+}
+
+html[data-shoo-reveal] [data-shoo-hide]:is(:hover, :focus-within) {
+  --shoo-dim: 0.8;
+}
+
+/* ---- tokens: YouTube's own values; YouTube's vars don't reach our nodes reliably ---- */
+.shoo-btn,
+.shoo-line,
+.shoo-reason,
+.shoo-menu,
+.shoo-page,
+.shoo-all {
+  --shoo-fg: #0f0f0f;
+  --shoo-muted: #606060;
+  --shoo-bg: #ffffff;
+  --shoo-page-bg: #ffffff;
+  --shoo-chip: rgba(0, 0, 0, 0.05);
+  --shoo-chip-hover: rgba(0, 0, 0, 0.1);
+  --shoo-chip-active: rgba(0, 0, 0, 0.16);
+  --shoo-link: #065fd4;
+  --shoo-focus: #065fd4;
+  font-family: "Roboto", "Arial", sans-serif;
+  font-size: 1.4rem;
+  line-height: 2rem;
+  color: var(--shoo-fg);
+  box-sizing: border-box;
+}
+
+html[dark] :is(.shoo-btn, .shoo-line, .shoo-reason, .shoo-menu, .shoo-page, .shoo-all) {
+  --shoo-fg: #f1f1f1;
+  --shoo-muted: #aaaaaa;
+  --shoo-bg: #212121;
+  --shoo-page-bg: #0f0f0f;
+  --shoo-chip: rgba(255, 255, 255, 0.1);
+  --shoo-chip-hover: rgba(255, 255, 255, 0.2);
+  --shoo-chip-active: rgba(255, 255, 255, 0.28);
+  --shoo-link: #3ea6ff;
+  --shoo-focus: #3ea6ff;
+}
+
+/* ---- the card button: inline after the channel name, never floating over text ---- */
+.shoo-btn {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin: -3px 0 -3px 8px; /* 24px target, row height unchanged */
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--shoo-muted);
+  vertical-align: middle;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.1s, background-color 0.1s;
+}
+
+.shoo-btn svg {
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+
+[data-shoo-card]:is(:hover, :focus-within) .shoo-btn,
+.shoo-btn[aria-expanded="true"],
+.shoo-btn:focus-visible {
+  opacity: 1;
+}
+
+.shoo-btn:hover,
+.shoo-btn[aria-expanded="true"] {
+  background: var(--shoo-chip-hover);
+  color: var(--shoo-fg);
+}
+
+.shoo-btn:active {
+  background: var(--shoo-chip-active);
+  color: var(--shoo-fg);
+}
+
+.shoo-btn.shoo-lockup {
+  display: none;
+  margin-left: 4px;
+  opacity: 1;
+}
+
+[data-shoo-card]:is(:hover, :focus-within) .shoo-btn.shoo-lockup,
+.shoo-btn.shoo-lockup:focus-visible {
+  display: inline-flex;
+}
+
+.shoo-btn.shoo-float {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 3;
+  margin: 0;
+  background: var(--shoo-bg);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.shoo-btn.shoo-float:hover {
+  background: var(--shoo-bg);
+  color: var(--shoo-fg);
+}
+
+@media (hover: none) {
+  .shoo-btn {
+    opacity: 1;
+  }
+
+  .shoo-btn.shoo-lockup {
+    display: inline-flex;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shoo-btn,
+  html[data-shoo-reveal] [data-shoo-hide] > :not(.shoo-reason) {
+    transition: none;
+  }
+}
+
+/* ---- focus: one visible ring for every control we add ---- */
+.shoo-btn:focus-visible,
+.shoo-line button:focus-visible,
+.shoo-reason button:focus-visible,
+.shoo-menu button:focus-visible,
+.shoo-page button:focus-visible,
+.shoo-all button:focus-visible {
+  outline: 2px solid var(--shoo-focus);
+  outline-offset: 2px;
+}
+
+/* ---- collab picker ---- */
+.shoo-menu {
+  position: absolute;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  max-width: 300px;
+  padding: 8px 0;
+  border-radius: 12px;
+  background: var(--shoo-bg);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25);
+}
+
+.shoo-menu p {
+  margin: 0 16px 4px;
+  color: var(--shoo-muted);
+  font-size: 1.2rem;
+}
+
+.shoo-menu button {
+  padding: 6px 16px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.shoo-menu button:hover {
+  background: var(--shoo-chip);
+}
+
+.shoo-menu button:focus-visible {
+  outline-offset: -2px;
+}
+
+/* ---- "Shoo hid videos from X · Undo" in the card's slot; "hid all N results · Show them" ---- */
+.shoo-line,
+.shoo-page,
+.shoo-all {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+}
+
+.shoo-line {
+  margin: 4px 0 12px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: var(--shoo-chip);
+}
+
+/* next to the player the column is narrow: smaller slot, like the cards there */
+#secondary [data-shoo-slot] > .shoo-line {
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 1.3rem;
+  line-height: 1.8rem;
+}
+
+.shoo-all {
+  margin: 12px 0;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: var(--shoo-chip);
+}
+
+.shoo-line .shoo-text,
+.shoo-page .shoo-text {
+  min-width: 0;
+  color: var(--shoo-muted);
+  overflow-wrap: anywhere;
+}
+
+/* its text span has no class: it inherits muted, the button sets its own color */
+.shoo-all {
+  color: var(--shoo-muted);
+}
+
+/* text actions inside a line: accent, underline on hover (a grey hover chip drops dark-mode contrast to 4.06) */
+.shoo-line button,
+.shoo-reason button,
+.shoo-all button {
+  flex: none;
+  margin: -4px -6px;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--shoo-link);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.shoo-line button:hover,
+.shoo-reason button:hover,
+.shoo-all button:hover {
+  text-decoration: underline;
+}
+
+.shoo-line button:focus-visible,
+.shoo-reason button:focus-visible,
+.shoo-all button:focus-visible {
+  outline-offset: 0;
+}
+
+/* ---- reason line on a dimmed card in "Show hidden" ---- */
+/* default (grid and Shorts cards, thumbnail on top): a small label on the thumbnail's corner */
+.shoo-reason {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  max-width: calc(100% - 12px);
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: var(--shoo-page-bg);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1.8rem;
+}
+
+/* list cards (search, next to the player): the reason goes in flow above the card, so it never
+   covers the title or channel, at any height (it grows to two rows after "Stop hiding this channel"
+   while a word still hides the card). The box becomes a column only in "Show hidden" and only when
+   hidden; checked live: YouTube's #dismissible keeps its size, its ripple layer is absolute. */
+html[data-shoo-reveal] :is(ytd-video-renderer, yt-lockup-view-model, ytd-compact-video-renderer, ytd-playlist-renderer, ytd-radio-renderer, ytd-channel-renderer)[data-shoo-hide] {
+  display: flex;
+  flex-direction: column;
+}
+
+html[data-shoo-reveal] :is(ytd-video-renderer, yt-lockup-view-model, ytd-compact-video-renderer, ytd-playlist-renderer, ytd-radio-renderer, ytd-channel-renderer)[data-shoo-hide] > .shoo-reason {
+  position: static;
+  order: -1;
+  max-width: none;
+  margin: 0 0 4px;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.shoo-reason .shoo-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  min-height: 24px;
+}
+
+.shoo-reason span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shoo-reason .shoo-line {
+  flex-wrap: nowrap;
+  min-height: 24px;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* the watch page's confirmation gets its own line under the owner row, so Like/Share/Save never move */
+#shoo-page.shoo-page-line {
+  margin: 12px 0 0;
+}
+
+/* ---- watch page / channel page: next to Subscribe ---- */
+.shoo-page {
+  min-width: 0;
+  margin-inline-start: 8px;
+}
+
+.shoo-page button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--shoo-chip);
+  color: inherit;
+  font: inherit;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.shoo-page button:hover {
+  background: var(--shoo-chip-hover);
+}
+
+.shoo-page button:active {
+  background: var(--shoo-chip-active);
+}
+
+.shoo-page button.shoo-main {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 18px;
+}
+
+/* if the button carries the ⊘ glyph (same svg as the card button) */
+.shoo-page svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-inline-start: -4px;
+}
+
+@media (forced-colors: active) {
+  .shoo-btn,
+  .shoo-page button,
+  .shoo-line,
+  .shoo-all,
+  .shoo-reason {
+    border: 1px solid ButtonText;
+  }
+
+  .shoo-btn {
+    opacity: 1;
+  }
+}

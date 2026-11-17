@@ -1,0 +1,287 @@
+{
+  "extName": {
+    "message": "Shoo für YouTube: Kanäle & Stichwörter in Titeln blockieren"
+  },
+  "extNameShort": {
+    "message": "Shoo für YouTube: Kanäle blockieren"
+  },
+  "extDescription": {
+    "message": "Blockier YouTube-Kanäle mit einem Klick, in der Suche und neben dem Player. Auch Titelwörter. Importiert alte Listen."
+  },
+  "cardHide": {
+    "message": "Videos von $CHANNEL$ ausblenden",
+    "placeholders": {
+      "channel": {
+        "content": "$1"
+      }
+    }
+  },
+  "cardHideTip": {
+    "message": "Shoo: Videos von $CHANNEL$ ausblenden",
+    "placeholders": {
+      "channel": {
+        "content": "$1"
+      }
+    }
+  },
+  "cardHideCollab": {
+    "message": "Videos ausblenden von…"
+  },
+  "cardHidden": {
+    "message": "Shoo blendet Videos von $CHANNEL$ aus",
+    "placeholders": {
+      "channel": {
+        "content": "$1"
+      }
+    }
+  },
+  "cardNotSaved": {
+    "message": "Nicht gespeichert. Lade den Tab neu, dann noch mal."
+  },
+  "undo": {
+    "message": "Rückgängig"
+  },
+  "unhideChannel": {
+    "message": "Kanal von der Liste nehmen"
+  },
+  "unhideWord": {
+    "message": "Wort von der Liste nehmen"
+  },
+  "pageHide": {
+    "message": "Videos dieses Kanals ausblenden"
+  },
+  "pageHidden": {
+    "message": "Shoo blendet diesen Kanal in der Suche und neben dem Player aus"
+  },
+  "pageBack": {
+    "message": "Zurück zu den Ergebnissen"
+  },
+  "reasonChannel": {
+    "message": "Ausgeblendet: Kanal $CHANNEL$",
+    "placeholders": {
+      "channel": {
+        "content": "$1"
+      }
+    }
+  },
+  "reasonWord": {
+    "message": "Ausgeblendet: Wort \"$WORD$\"",
+    "placeholders": {
+      "word": {
+        "content": "$1"
+      }
+    }
+  },
+  "allHidden": {
+    "message": "Shoo hat alle Ergebnisse hier ausgeblendet: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "showThem": {
+    "message": "Anzeigen"
+  },
+  "popupOn": {
+    "message": "Shoo ist an"
+  },
+  "popupCounts": {
+    "message": "Kanäle: $CHANNELS$ · Wörter: $WORDS$",
+    "placeholders": {
+      "channels": {
+        "content": "$1"
+      },
+      "words": {
+        "content": "$2"
+      }
+    }
+  },
+  "popupShowHidden": {
+    "message": "Hier Ausgeblendetes zeigen ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupNothingHere": {
+    "message": "Hier ist nichts ausgeblendet"
+  },
+  "popupRevealed": {
+    "message": "Ausgeblendete Videos sind hier sichtbar"
+  },
+  "popupHideAgain": {
+    "message": "Wieder ausblenden"
+  },
+  "reloadTab": {
+    "message": "Lade den Tab neu, damit Shoo hier läuft"
+  },
+  "popupEmpty": {
+    "message": "Noch leer: Maus über ein Video, dann ⊘"
+  },
+  "popupManage": {
+    "message": "Liste bearbeiten"
+  },
+  "popupBroken": {
+    "message": "YouTube hat vielleicht etwas geändert. Ausgeblendete Kanäle können wieder auftauchen: $SURFACES$.",
+    "placeholders": {
+      "surfaces": {
+        "content": "$1"
+      }
+    }
+  },
+  "surfaceSearch": {
+    "message": "in der Suche"
+  },
+  "surfaceSubs": {
+    "message": "in den Abos"
+  },
+  "surfaceHome": {
+    "message": "auf der Startseite"
+  },
+  "surfaceSidebar": {
+    "message": "neben dem Player"
+  },
+  "report": {
+    "message": "Problem melden"
+  },
+  "knownIssues": {
+    "message": "Bekannte Fehler und Fixes"
+  },
+  "titleBroken": {
+    "message": "Shoo: YouTube hat vielleicht etwas geändert. Klick für Details."
+  },
+  "welcomeTitle": {
+    "message": "Kanal einmal ausblenden: Shoo blendet seine Videos in der Suche und neben dem Player aus"
+  },
+  "welcomeImportFirst": {
+    "message": "Falls du einen anderen Blocker hattest: Exportier zuerst dort deine Liste. Wenn du ihn entfernst, ist seine Liste weg. Ist er schon entfernt, füg Kanallinks oder Namen ins Feld ein, einen pro Zeile."
+  },
+  "welcomeStepsBlockTube": {
+    "message": "BlockTube: Öffne die Einstellungen und exportiere. Du bekommst die Datei blocktube_backup.json."
+  },
+  "welcomeStepsChannelBlocker": {
+    "message": "Channel Blocker: Öffne die Einstellungen, geh zu Import und Export und exportier deine Liste. Du bekommst eine .save-Datei."
+  },
+  "importBox": {
+    "message": "Datei hierher ziehen oder Liste einfügen"
+  },
+  "importChoose": {
+    "message": "Datei auswählen"
+  },
+  "importAdd": {
+    "message": "Hinzufügen"
+  },
+  "importResult": {
+    "message": "Kanäle hinzugefügt: $CHANNELS$ · Wörter: $WORDS$",
+    "placeholders": {
+      "channels": {
+        "content": "$1"
+      },
+      "words": {
+        "content": "$2"
+      }
+    }
+  },
+  "importSkippedPatterns": {
+    "message": "Reguläre Ausdrücke übersprungen: $COUNT$ (Shoo nimmt nur einfache Wörter)",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "importSkippedOther": {
+    "message": "Andere Einträge übersprungen: $COUNT$ (einzelne Videos, Kommentarfilter, Ausnahmen, JavaScript-Filter)",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "importIdOnly": {
+    "message": "Kanäle mit ID, aber ohne Namen: $COUNT$. An den meisten Stellen erkennt Shoo sie noch nicht. Taucht ein Video von einem auf, blende es einmal aus, dann merkt sich Shoo den Kanal.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "importUndo": {
+    "message": "Import rückgängig machen"
+  },
+  "importNothing": {
+    "message": "Keine Kanäle oder Wörter gefunden. Nimm die Exportdatei deines alten Blockers oder einen Kanal pro Zeile."
+  },
+  "importTooBig": {
+    "message": "Diese Liste ist zu lang. Shoo nimmt bis zu 20.000 Kanäle und Wörter auf einmal."
+  },
+  "welcomePin": {
+    "message": "Pinn Shoo über das Puzzle-Symbol in der Symbolleiste an. Merkt Shoo, dass YouTube etwas geändert hat und ausgeblendete Kanäle zurückkommen können, zeigt das Shoo-Symbol \"!\"."
+  },
+  "welcomeReloadTabs": {
+    "message": "Offene YouTube-Tabs neu laden ($COUNT$), damit Shoo dort läuft",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "welcomeReloadDone": {
+    "message": "Neu geladen"
+  },
+  "welcomeHowTo": {
+    "message": "Kanal ausblenden: Maus über eines seiner Videos, dann ⊘ klicken. Wörter hinzufügen oder Kanal zurückholen: Shoo-Menü, dann \"Liste bearbeiten\"."
+  },
+  "welcomeOpenYouTube": {
+    "message": "YouTube öffnen"
+  },
+  "listTitle": {
+    "message": "Ausgeblendete Kanäle und Wörter"
+  },
+  "listFilter": {
+    "message": "In der Liste suchen"
+  },
+  "listChannels": {
+    "message": "Kanäle"
+  },
+  "listWords": {
+    "message": "Wörter"
+  },
+  "listAddWord": {
+    "message": "Wort oder Phrase hinzufügen"
+  },
+  "listWordLabel": {
+    "message": "Wort"
+  },
+  "listWordHint": {
+    "message": "Prüft nur Videotitel. Ein Wort blendet auch Wörter aus, die damit beginnen: \"Krypto\" trifft auch \"Kryptowährung\". Wörter mit bis zu 3 Buchstaben zählen nur ganz: \"Rad\" trifft nicht \"Radio\"."
+  },
+  "listAddMany": {
+    "message": "Liste einfügen"
+  },
+  "listImport": {
+    "message": "Datei importieren"
+  },
+  "listExport": {
+    "message": "In Datei exportieren"
+  },
+  "listRemoved": {
+    "message": "Aus der Liste entfernt: $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "listIdOnlyRow": {
+    "message": "Noch ohne Namen: Shoo erkennt den Kanal an den meisten Stellen nicht. Blende eins seiner Videos einmal aus, dann merkt Shoo ihn sich."
+  },
+  "listMisses": {
+    "message": "Neben dem Player und bei Kollaborationen zeigt YouTube nur den Kanalnamen, also vergleicht Shoo dort nach Namen. Dabei kann es einen gleichnamigen Kanal mit ausblenden und einen umbenannten verpassen, bis es eines seiner Videos in der Suche sieht. Kanäle, die nur mit Namen auf die Liste kamen (eingefügte Namen, Importe aus Channel Blocker, Ausblenden neben dem Player), vergleicht Shoo überall nach Namen. Eine Umbenennung bekommt es nicht mit. Nennt eine Kollaboration nur einige Kanäle und zählt den Rest, sieht Shoo die gezählten nicht. Im Shorts-Regal der Suche wirken nur Wörter."
+  },
+  "listEmpty": {
+    "message": "Die Liste ist leer. Blende einen Kanal über eines seiner Videos auf YouTube aus oder füg oben ein Wort hinzu."
+  }
+}

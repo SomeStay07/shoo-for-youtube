@@ -1,0 +1,287 @@
+{
+  "extName": {
+    "message": "Shoo для YouTube: блокировка каналов и слов в названиях"
+  },
+  "extNameShort": {
+    "message": "Shoo для YouTube: блокировка каналов"
+  },
+  "extDescription": {
+    "message": "Блокируйте каналы YouTube в один клик, в поиске и рядом с плеером. Слова в названиях тоже. Можно перенести старый список."
+  },
+  "cardHide": {
+    "message": "Скрыть видео канала $CHANNEL$",
+    "placeholders": {
+      "channel": {
+        "content": "$1"
+      }
+    }
+  },
+  "cardHideTip": {
+    "message": "Shoo: скрыть видео канала $CHANNEL$",
+    "placeholders": {
+      "channel": {
+        "content": "$1"
+      }
+    }
+  },
+  "cardHideCollab": {
+    "message": "Скрыть видео канала…"
+  },
+  "cardHidden": {
+    "message": "Shoo скрыл видео канала $CHANNEL$",
+    "placeholders": {
+      "channel": {
+        "content": "$1"
+      }
+    }
+  },
+  "cardNotSaved": {
+    "message": "Не сохранилось. Перезагрузите вкладку и повторите."
+  },
+  "undo": {
+    "message": "Отменить"
+  },
+  "unhideChannel": {
+    "message": "Больше не скрывать канал"
+  },
+  "unhideWord": {
+    "message": "Убрать слово из списка"
+  },
+  "pageHide": {
+    "message": "Скрыть видео этого канала"
+  },
+  "pageHidden": {
+    "message": "Shoo скрывает этот канал в поиске и рядом с плеером"
+  },
+  "pageBack": {
+    "message": "Назад к поиску"
+  },
+  "reasonChannel": {
+    "message": "Скрыто: канал $CHANNEL$",
+    "placeholders": {
+      "channel": {
+        "content": "$1"
+      }
+    }
+  },
+  "reasonWord": {
+    "message": "Скрыто: слово \"$WORD$\"",
+    "placeholders": {
+      "word": {
+        "content": "$1"
+      }
+    }
+  },
+  "allHidden": {
+    "message": "Shoo скрыл все результаты на этой странице: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "showThem": {
+    "message": "Показать"
+  },
+  "popupOn": {
+    "message": "Shoo включён"
+  },
+  "popupCounts": {
+    "message": "Каналы: $CHANNELS$ · Слова: $WORDS$",
+    "placeholders": {
+      "channels": {
+        "content": "$1"
+      },
+      "words": {
+        "content": "$2"
+      }
+    }
+  },
+  "popupShowHidden": {
+    "message": "Показать скрытое на странице ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupNothingHere": {
+    "message": "На этой странице ничего не скрыто"
+  },
+  "popupRevealed": {
+    "message": "Скрытые видео показаны на этой странице"
+  },
+  "popupHideAgain": {
+    "message": "Снова скрыть"
+  },
+  "reloadTab": {
+    "message": "Перезагрузите вкладку, чтобы Shoo заработал"
+  },
+  "popupEmpty": {
+    "message": "Пока пусто: наведите на видео и нажмите ⊘"
+  },
+  "popupManage": {
+    "message": "Изменить список"
+  },
+  "popupBroken": {
+    "message": "Похоже, YouTube что-то поменял, и скрытые каналы могут снова появиться: $SURFACES$.",
+    "placeholders": {
+      "surfaces": {
+        "content": "$1"
+      }
+    }
+  },
+  "surfaceSearch": {
+    "message": "в поиске"
+  },
+  "surfaceSubs": {
+    "message": "в подписках"
+  },
+  "surfaceHome": {
+    "message": "на главной"
+  },
+  "surfaceSidebar": {
+    "message": "рядом с плеером"
+  },
+  "report": {
+    "message": "Сообщить о проблеме"
+  },
+  "knownIssues": {
+    "message": "Известные поломки и починки"
+  },
+  "titleBroken": {
+    "message": "Shoo: похоже, YouTube что-то поменял. Откройте, чтобы узнать что."
+  },
+  "welcomeTitle": {
+    "message": "Скройте канал один раз, и Shoo уберёт его видео из поиска и из колонки рядом с плеером"
+  },
+  "welcomeImportFirst": {
+    "message": "Если пользовались другим блокировщиком, сначала выгрузите из него список: вместе с расширением удаляется и его список. Если его уже нет, вставьте в поле ссылки на каналы или их имена, каждый канал с новой строки."
+  },
+  "welcomeStepsBlockTube": {
+    "message": "BlockTube: откройте его настройки и выгрузите список. Сохранится файл blocktube_backup.json."
+  },
+  "welcomeStepsChannelBlocker": {
+    "message": "Channel Blocker: откройте его настройки, найдите импорт и экспорт и выгрузите список. Сохранится файл .save."
+  },
+  "importBox": {
+    "message": "Перетащите файл сюда или вставьте список"
+  },
+  "importChoose": {
+    "message": "Выбрать файл"
+  },
+  "importAdd": {
+    "message": "Добавить"
+  },
+  "importResult": {
+    "message": "Добавлено каналов: $CHANNELS$ · слов: $WORDS$",
+    "placeholders": {
+      "channels": {
+        "content": "$1"
+      },
+      "words": {
+        "content": "$2"
+      }
+    }
+  },
+  "importSkippedPatterns": {
+    "message": "Пропущено регулярных выражений: $COUNT$. Shoo понимает только обычные слова.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "importSkippedOther": {
+    "message": "Пропущено других записей: $COUNT$ (отдельные видео, фильтры комментариев, исключения, фильтры на JavaScript)",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "importIdOnly": {
+    "message": "Каналов с ID, но без имени: $COUNT$. Пока Shoo узнаёт их далеко не везде. Если видео такого канала всё же попадётся, скройте его один раз, и Shoo запомнит канал.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "importUndo": {
+    "message": "Отменить импорт"
+  },
+  "importNothing": {
+    "message": "Каналов и слов не нашлось. Нужен файл, выгруженный из старого блокировщика, или список: один канал на строку."
+  },
+  "importTooBig": {
+    "message": "Список слишком длинный. Shoo принимает до 20\u00A0000 каналов и слов за раз."
+  },
+  "welcomePin": {
+    "message": "Закрепите Shoo через значок пазла на панели. Если Shoo заметит, что YouTube что-то поменял и скрытые каналы могут вернуться, на значке Shoo появится \"!\"."
+  },
+  "welcomeReloadTabs": {
+    "message": "Перезагрузить вкладки YouTube ($COUNT$), чтобы Shoo заработал в них",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "welcomeReloadDone": {
+    "message": "Перезагружено"
+  },
+  "welcomeHowTo": {
+    "message": "Чтобы скрыть канал, наведите курсор на его видео и нажмите ⊘. Чтобы добавить слово или вернуть канал, откройте меню Shoo и нажмите \"Изменить список\"."
+  },
+  "welcomeOpenYouTube": {
+    "message": "Открыть YouTube"
+  },
+  "listTitle": {
+    "message": "Скрытые каналы и слова"
+  },
+  "listFilter": {
+    "message": "Найти в списке"
+  },
+  "listChannels": {
+    "message": "Каналы"
+  },
+  "listWords": {
+    "message": "Слова"
+  },
+  "listAddWord": {
+    "message": "Добавить слово или фразу"
+  },
+  "listWordLabel": {
+    "message": "Слово"
+  },
+  "listWordHint": {
+    "message": "Проверяются только названия видео. Слово находит и более длинные слова с тем же началом, так что хватит начала: \"нейросет\" скроет \"нейросеть\" и \"нейросети\". Слова из трёх букв и короче ищутся только целиком: \"кот\" не скроет \"котлеты\"."
+  },
+  "listAddMany": {
+    "message": "Вставить списком"
+  },
+  "listImport": {
+    "message": "Загрузить файл"
+  },
+  "listExport": {
+    "message": "Сохранить в файл"
+  },
+  "listRemoved": {
+    "message": "Убрано из списка: $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "listIdOnlyRow": {
+    "message": "Имени пока нет, и Shoo часто не узнаёт канал. Скройте одно его видео, и Shoo запомнит канал."
+  },
+  "listMisses": {
+    "message": "Рядом с плеером и в совместных видео YouTube показывает только имя канала, и Shoo сверяет по имени. Там он может скрыть тёзку и пропустить переименованный канал, пока не увидит его видео в поиске. Если канал добавлен только по имени (вставленные имена, импорт из Channel Blocker, скрытие из колонки рядом с плеером), Shoo везде сверяет его по имени и не узнаёт о переименовании. Когда у совместного видео часть каналов только посчитана, без имён, Shoo их не видит. На полке Shorts в поиске работают только слова."
+  },
+  "listEmpty": {
+    "message": "Список пуст. Скройте канал кнопкой на его видео на YouTube или добавьте слово выше."
+  }
+}

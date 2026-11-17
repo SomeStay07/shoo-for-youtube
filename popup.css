@@ -1,0 +1,201 @@
+:root {
+  --bg: #ffffff;
+  --fg: #0f0f0f;
+  --muted: #606060;
+  --line: #e5e5e5;
+  --accent: #065fd4;
+  --focus: #065fd4;
+  --warn: #d93025;
+  --warn-fg: #ffffff;
+  --warn-bg: #fce8e6;
+  --warn-link: #b3261e;
+  --primary: #16302b;
+  --primary-fg: #f4ebd9;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1f1f1f;
+    --fg: #f1f1f1;
+    --muted: #aaaaaa;
+    --line: #3a3a3a;
+    --accent: #8ab4f8;
+    --focus: #8ab4f8;
+    --warn: #f28b82;
+    --warn-fg: #1f1f1f;
+    --warn-bg: #3a2523;
+    --warn-link: #f28b82;
+    --primary: #f2a541;
+    --primary-fg: #16302b;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* rows: header, "!" box, the page action, then the links side by side */
+body {
+  width: 340px;
+  margin: 0;
+  padding: 14px 16px;
+  background: var(--bg);
+  color: var(--fg);
+  font: 13px/1.4 system-ui, -apple-system, Roboto, sans-serif;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px 16px;
+}
+
+body > header,
+body > #health,
+body > #here {
+  flex: 1 0 100%;
+}
+
+header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+p {
+  margin: 0;
+}
+
+#status {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* "!" box: same mark as the toolbar badge, so the two read as one signal */
+.warn {
+  position: relative;
+  padding: 8px 10px 8px 36px;
+  border-radius: 8px;
+  background: var(--warn-bg);
+  box-shadow: inset 3px 0 0 var(--warn);
+  line-height: 1.35;
+}
+
+.warn::before {
+  content: "!" / "";
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--warn);
+  color: var(--warn-fg);
+  font: 700 11px/16px system-ui, -apple-system, Roboto, sans-serif;
+  text-align: center;
+}
+
+.warn a {
+  color: var(--warn-link);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.warn a:hover {
+  text-decoration: underline;
+}
+
+.warn .links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  margin-top: 4px;
+}
+
+/* the page action sits above a hairline; the links live under it */
+#here {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+#here:empty {
+  padding-bottom: 0;
+}
+
+#here {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#nothing,
+#reload,
+#revealed {
+  padding: 4px 0;
+}
+
+a {
+  color: var(--accent);
+}
+
+#manage,
+#report {
+  margin: -4px 0;
+  padding: 4px 0;
+  text-decoration: none;
+}
+
+#manage:hover,
+#report:hover {
+  text-decoration: underline;
+}
+
+#report {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+button.primary {
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--primary);
+  color: var(--primary-fg);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button.primary:hover {
+  filter: brightness(1.12);
+}
+
+button.primary:active {
+  filter: brightness(0.92);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+button.primary:focus-visible {
+  border-radius: 18px;
+}
+
+@media (forced-colors: active) {
+  button.primary {
+    border: 1px solid ButtonText;
+  }
+
+  .warn {
+    border-left: 3px solid CanvasText;
+  }
+}

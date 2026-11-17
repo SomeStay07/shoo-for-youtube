@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="extName"></title>
+  <link rel="stylesheet" href="pages.css">
+</head>
+<body class="welcome">
+  <main>
+    <header>
+      <img src="icons/icon-48.png" srcset="icons/icon-48.png 1x, icons/icon-96.png 2x" alt="" width="48" height="48">
+      <h1 data-i18n="welcomeTitle"></h1>
+    </header>
+    <section id="import" class="card">
+      <p id="importFirst" class="lead" data-i18n="welcomeImportFirst"></p>
+      <ul class="steps-old">
+        <li data-i18n="welcomeStepsBlockTube"></li>
+        <li data-i18n="welcomeStepsChannelBlocker"></li>
+      </ul>
+      <div id="box" class="drop"></div>
+      <div id="result" role="status" aria-live="polite"></div>
+    </section>
+    <ol class="steps">
+      <li id="pin" data-i18n="welcomePin"></li>
+      <li id="reload" hidden></li>
+    </ol>
+    <p id="howto" data-i18n="welcomeHowTo"></p>
+    <p><a id="openYouTube" target="_blank" rel="noopener" data-i18n="welcomeOpenYouTube"></a></p>
+  </main>
+  <script src="lib.js"></script>
+  <script src="importui.js"></script>
+  <script src="welcome.js"></script>
+</body>
+</html>

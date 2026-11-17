@@ -1,0 +1,123 @@
+{
+  "en": {
+    "tile": "Block YouTube channels<br>in one click.",
+    "screens": [
+      [
+        "1-search-button.png",
+        "Block a channel right from search"
+      ],
+      [
+        "2-hidden-undo.png",
+        "That channel's videos are gone"
+      ],
+      [
+        "3-import.png",
+        "Bring your list from another blocker"
+      ],
+      [
+        "4-popup-show-hidden.png",
+        "See what Shoo hid on this page"
+      ],
+      [
+        "5-list.png",
+        "Hide videos by words in the title"
+      ]
+    ]
+  },
+  "ru": {
+    "screens": [
+      [
+        "1-search-button.png",
+        "Блокируйте канал прямо в поиске"
+      ],
+      [
+        "2-hidden-undo.png",
+        "Видео этого канала ушли со страницы"
+      ],
+      [
+        "3-import.png",
+        "Перенесите список из другого блокировщика"
+      ],
+      [
+        "4-popup-show-hidden.png",
+        "Посмотрите, что Shoo скрыл на странице"
+      ],
+      [
+        "5-list.png",
+        "Скрывайте видео по словам в названии"
+      ]
+    ]
+  },
+  "es": {
+    "screens": [
+      [
+        "1-search-button.png",
+        "Bloquea un canal desde la búsqueda"
+      ],
+      [
+        "2-hidden-undo.png",
+        "Los videos de ese canal se fueron"
+      ],
+      [
+        "3-import.png",
+        "Trae tu lista de otro bloqueador"
+      ],
+      [
+        "4-popup-show-hidden.png",
+        "Mira lo que Shoo ocultó en esta página"
+      ],
+      [
+        "5-list.png",
+        "Oculta videos por palabras del título"
+      ]
+    ]
+  },
+  "pt_BR": {
+    "screens": [
+      [
+        "1-search-button.png",
+        "Bloqueie um canal direto da pesquisa"
+      ],
+      [
+        "2-hidden-undo.png",
+        "Os vídeos desse canal sumiram"
+      ],
+      [
+        "3-import.png",
+        "Traga sua lista de outro bloqueador"
+      ],
+      [
+        "4-popup-show-hidden.png",
+        "Veja o que o Shoo ocultou nesta página"
+      ],
+      [
+        "5-list.png",
+        "Oculte vídeos por palavras do título"
+      ]
+    ]
+  },
+  "de": {
+    "screens": [
+      [
+        "1-search-button.png",
+        "Blockier einen Kanal direkt in der Suche"
+      ],
+      [
+        "2-hidden-undo.png",
+        "Die Videos des Kanals sind weg"
+      ],
+      [
+        "3-import.png",
+        "Liste aus einem anderen Blocker mitnehmen"
+      ],
+      [
+        "4-popup-show-hidden.png",
+        "Sieh, was Shoo hier ausgeblendet hat"
+      ],
+      [
+        "5-list.png",
+        "Videos nach Wörtern im Titel ausblenden"
+      ]
+    ]
+  }
+}

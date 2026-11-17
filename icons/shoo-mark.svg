@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+  <!-- Shoo mark: cream disc, deep green ring and slash (the card button glyph). Errand's sister: same palette, inverse body. -->
+  <circle cx="48" cy="48" r="43" fill="#F4EBD9"/>
+  <path d="M18 18 L78 78" stroke="#16302B" stroke-width="10"/>
+  <circle cx="48" cy="48" r="43" fill="none" stroke="#16302B" stroke-width="10"/>
+</svg>

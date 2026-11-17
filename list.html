@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="listTitle"></title>
+  <link rel="stylesheet" href="pages.css">
+</head>
+<body class="list">
+  <main>
+    <header>
+      <img src="icons/icon-48.png" srcset="icons/icon-48.png 1x, icons/icon-96.png 2x" alt="" width="40" height="40">
+      <h1 data-i18n="listTitle"></h1>
+    </header>
+    <input id="filter" type="search" data-i18n-placeholder="listFilter" data-i18n-label="listFilter" autocomplete="off">
+    <div class="toolbar">
+      <span id="importFile"></span>
+      <button type="button" id="export" class="secondary" data-i18n="listExport"></button>
+    </div>
+    <details id="many">
+      <summary data-i18n="listAddMany"></summary>
+      <div id="manyBox"></div>
+    </details>
+    <div id="result" role="status" aria-live="polite"></div>
+    <p id="empty" class="muted" data-i18n="listEmpty" hidden></p>
+    <section>
+      <h2 data-i18n="listWords"></h2>
+      <form id="addWordForm">
+        <input id="addWord" type="text" data-i18n-placeholder="listAddWord" data-i18n-label="listAddWord" aria-describedby="wordHint" autocomplete="off">
+        <button type="submit" id="addWordButton" class="secondary" data-i18n="importAdd"></button>
+      </form>
+      <p id="wordHint" class="muted" data-i18n="listWordHint"></p>
+      <ul id="words"></ul>
+    </section>
+    <section>
+      <h2 data-i18n="listChannels"></h2>
+      <ul id="channels"></ul>
+    </section>
+    <p class="muted" data-i18n="listMisses"></p>
+  </main>
+  <script src="lib.js"></script>
+  <script src="importui.js"></script>
+  <script src="list.js"></script>
+</body>
+</html>

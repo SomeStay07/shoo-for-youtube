@@ -1,0 +1,15 @@
+{
+  "name": "shoo-for-youtube",
+  "version": "0.1.0",
+  "private": true,
+  "license": "GPL-3.0-only",
+  "scripts": {
+    "test": "node --test \"test/*.test.js\"",
+    "build": "node scripts/build.mjs",
+    "e2e": "node scripts/run-e2e.mjs fast",
+    "e2e:long": "node scripts/run-e2e.mjs long"
+  },
+  "devDependencies": {
+    "playwright-core": "1.56.1"
+  }
+}
