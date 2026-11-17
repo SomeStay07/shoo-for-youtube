@@ -630,12 +630,15 @@
     return { slot: { ...channel, ...(label && !stale ? { name: label } : {}) }, verified };
   }
 
-  function channelOfPage(pathname, { docPath = "", metaId = "" } = {}) {
+  function channelOfPage(pathname, { docPath = "", metaId = "", headerHandle = "" } = {}) {
     const fromPath = channelOfPath(pathname);
     if (fromPath?.id) return fromPath;
     const root = channelRoot(pathname);
     const id = root && root === channelRoot(docPath) && UC.test(String(metaId)) ? String(metaId) : null;
-    if (!fromPath && !id) return null;
+    if (!fromPath && !id) {
+      const own = String(headerHandle).trim();
+      return root && /^@\S+$/.test(own) ? parseChannelHref(`/${own}`) : null;
+    }
     return { ...fromPath, ...(id ? { id } : {}) };
   }
 

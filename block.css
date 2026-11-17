@@ -1,4 +1,4 @@
-html:not([data-shoo-reveal]) [data-shoo-hide]:not([data-shoo-slot]) {
+html:not([data-shoo-reveal]) :is([data-shoo-hide]:not([data-shoo-slot]), [data-shoo-shelf]) {
   display: none !important;
 }
 

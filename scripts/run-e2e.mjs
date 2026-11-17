@@ -28,6 +28,9 @@ const SUITES = {
     ["quiet", "r2"],
     ["grid-lockup", "r3"],
     ["import-ui", "r3"],
+    ["shelf", "r3"],
+    ["channel-c", "r3"],
+    ["r3-fixes", "r3"],
   ],
   long: [
     ["stick", "3", { env: { CYCLES: "6" }, timeoutMs: 60 * 60 * 1000 }],

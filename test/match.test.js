@@ -149,6 +149,16 @@ test("channel page slot: handle from the URL, id from the page's identifier only
   assert.deepEqual(L.channelOfPage("/channel/UCHnyfMqiRRG1u-2MsSQLbXA", { docPath: "/watch", metaId: "UCzzzzzzzzzzzzzzzzzzzzzz" }), { id: "UCHnyfMqiRRG1u-2MsSQLbXA" });
 });
 
+test("/c/ and /user/ pages reached in the app: the header's own @handle names the channel when the address has neither handle nor ID", () => {
+  assert.deepEqual(L.channelOfPage("/c/veritasium", { docPath: "/watch", metaId: "UCzzzzzzzzzzzzzzzzzzzzzz", headerHandle: "@veritasium" }), { handle: "@veritasium" });
+  assert.deepEqual(L.channelOfPage("/user/1veritasium/videos", { docPath: "/results", headerHandle: " @veritasium " }), { handle: "@veritasium" });
+  assert.equal(L.channelOfPage("/c/other", { docPath: "/watch", headerHandle: "Veritasium" }), null, "a name is not a handle");
+  assert.equal(L.channelOfPage("/c/other", { docPath: "/watch", headerHandle: "" }), null);
+  assert.deepEqual(L.channelOfPage("/@kurzgesagt", { docPath: "/watch", headerHandle: "@veritasium" }), { handle: "@kurzgesagt" }, "the address wins over a stale header");
+  assert.deepEqual(L.channelOfPage("/c/veritasium", { docPath: "/c/veritasium", metaId: "UCHnyfMqiRRG1u-2MsSQLbXA", headerHandle: "@veritasium" }), { id: "UCHnyfMqiRRG1u-2MsSQLbXA" });
+  assert.equal(L.channelOfPage("/watch", { docPath: "/watch", headerHandle: "@veritasium" }), null);
+});
+
 test("channel header after an in-app move: the name is used and learned only when the header's own @handle is the page's", () => {
   const c = { handle: "@InGeniusOfficial" };
   assert.deepEqual(L.headerSlot(c, { name: "Veritasium", handle: "@veritasium" }), { slot: { handle: "@InGeniusOfficial" }, verified: false }, "stale header: no name at all");

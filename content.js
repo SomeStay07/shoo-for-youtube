@@ -32,6 +32,7 @@
   const SIDEBAR = "#secondary, #related, ytd-watch-next-secondary-results-renderer";
   const HIDE = "data-shoo-hide";
   const SLOT = "data-shoo-slot";
+  const SHELF_GONE = "data-shoo-shelf";
   const SEP = /^(?:,|(?:and|und|и|y|e)\s)/u;
 
   let list = L.emptyList();
@@ -103,16 +104,27 @@
   let chain = Promise.resolve();
   let inFlight = 0;
   let behind = false;
+  const WRITE_WAIT_MS = 10000;
   function write(message, box = null, onFail = writeFailed) {
     const msg = { ...message, op: `${opBase}-${++opSeq}` };
     inFlight++;
-    const run = chain.then(() => send(msg));
+    let timedOut = false;
+    let timer = 0;
+    const giveUp = new Promise((r) => {
+      timer = setTimeout(() => {
+        timedOut = true;
+        r(null);
+      }, WRITE_WAIT_MS);
+    });
+    const run = chain.then(() => Promise.race([send(msg), giveUp])).finally(() => clearTimeout(timer));
     chain = run.catch(() => null);
     return run.then(
       (res) => {
         inFlight--;
-        if (res === null || res === undefined) onFail(box);
-        else {
+        if (res === null || res === undefined) {
+          onFail(box);
+          if (timedOut && !inFlight) catchUp();
+        } else {
           if (box) clearFailed(box);
           if (!inFlight && behind) catchUp();
         }
@@ -240,8 +252,13 @@
     return v;
   }
 
+  function headerHandle(header) {
+    return [...(header?.querySelectorAll("yt-content-metadata-view-model [role=text]") || [])].map(text).find((s) => /^@\S+$/.test(s)) || "";
+  }
+
   function pageChannel() {
-    return L.channelOfPage(location.pathname, { docPath, metaId: document.querySelector('meta[itemprop="identifier"][content^="UC"]')?.content });
+    const header = page === "channel" ? document.querySelector(`${CHANNEL_PAGE}:not([hidden]) yt-page-header-view-model`) : null;
+    return L.channelOfPage(location.pathname, { docPath, metaId: document.querySelector('meta[itemprop="identifier"][content^="UC"]')?.content, headerHandle: headerHandle(header) });
   }
 
   function computeExempt() {
@@ -710,12 +727,29 @@
   const inActivePage = (node) => !node.closest("ytd-search[hidden], ytd-browse[hidden], ytd-watch-flexy[hidden], ytd-watch-grid[hidden]");
 
   function hiddenOnPage() {
-    return [...document.querySelectorAll(`[${HIDE}]`)].filter((box) => inActivePage(box) && Boolean(box.parentElement?.checkVisibility()));
+    return [...document.querySelectorAll(`[${HIDE}]`)].filter((box) => inActivePage(box) && Boolean((box.closest(`[${SHELF_GONE}]`) || box).parentElement?.checkVisibility()));
+  }
+
+  const SHELF = "ytd-shelf-renderer, grid-shelf-view-model";
+  function syncShelves() {
+    for (const shelf of document.querySelectorAll(`ytd-search ${SHELF}`)) {
+      let boxes = 0;
+      let gone = 0;
+      for (const card of shelf.querySelectorAll(CARD)) {
+        if (skipCard(card)) continue;
+        const box = outerOf(card);
+        boxes++;
+        if (box.hasAttribute(HIDE) && !box.hasAttribute(SLOT)) gone++;
+      }
+      const all = ready && boxes > 0 && gone === boxes;
+      if (all !== shelf.hasAttribute(SHELF_GONE)) shelf.toggleAttribute(SHELF_GONE, all);
+    }
   }
 
   function syncAllHidden(force = false) {
     if (!allDirty && !force) return;
     allDirty = false;
+    syncShelves();
     const current = document.getElementById("shoo-all");
     let total = 0;
     let hidden = 0;
@@ -758,8 +792,7 @@
       const actions = header?.querySelector("yt-flexible-actions-view-model");
       const c = pageChannel();
       if (!actions || !c) return null;
-      const own = [...header.querySelectorAll("yt-content-metadata-view-model [role=text]")].map(text).find((s) => /^@\S+$/.test(s)) || "";
-      const { slot, verified } = L.headerSlot(c, { name: text(header.querySelector("h1")), handle: own });
+      const { slot, verified } = L.headerSlot(c, { name: text(header.querySelector("h1")), handle: headerHandle(header) });
       return { host: actions.parentElement, place: (node) => actions.after(node), slot, verified, source: "channel" };
     }
     return null;
@@ -838,6 +871,13 @@
     if (syncTimer) return;
     syncTimer = setTimeout(() => {
       syncTimer = 0;
+      if (ready && page === "channel") {
+        const now = computeExempt();
+        if (now !== exempt) {
+          exempt = now;
+          sweepActive();
+        }
+      }
       syncPage();
       syncAllHidden();
     }, 250);
