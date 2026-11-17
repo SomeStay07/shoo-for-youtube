@@ -63,7 +63,7 @@ export async function until(probe, pred, ms = 15000, step = 200) {
   return { value, ok: Boolean(pred(value)), ms: Date.now() - t0 };
 }
 
-export async function launch({ name, extension = true, width = 1280, height = 900, ext = EXT, hl = "en", gl = "US", colorScheme = "dark", keep = false } = {}) {
+export async function launch({ name, extension = true, width = 1280, height = 900, ext = EXT, hl = "en", gl = "US", colorScheme = "dark", keep = false, locale = "en-US" } = {}) {
   if (extension && ext === join(ROOT, "dist/chrome") && !process.env.E2E_ALLOW_STALE) {
     const stale = distStale(ext);
     if (stale.length) throw new Error(`dist/chrome is older than the sources (${stale.slice(0, 5).join(", ")}); run npm run build`);
@@ -71,12 +71,12 @@ export async function launch({ name, extension = true, width = 1280, height = 90
   const profile = join(OUT, `profile-${name}`);
   if (!keep) rmSync(profile, { recursive: true, force: true });
   rmSync(join(profile, "DevToolsActivePort"), { force: true });
-  const args = ["--lang=en-US", process.env.HEADED === "1" ? "--window-position=-2000,0" : "--headless=new", "--disable-blink-features=AutomationControlled", "--use-mock-keychain", "--password-store=basic", "--remote-debugging-port=0", "--mute-audio"];
+  const args = [`--lang=${locale}`, process.env.HEADED === "1" ? "--window-position=-2000,0" : "--headless=new", "--disable-blink-features=AutomationControlled", "--use-mock-keychain", "--password-store=basic", "--remote-debugging-port=0", "--mute-audio"];
   if (extension) args.unshift(`--disable-extensions-except=${ext}`, `--load-extension=${ext}`);
   const context = await chromium.launchPersistentContext(profile, {
     executablePath: CHROME,
     headless: false,
-    locale: "en-US",
+    locale,
     ignoreDefaultArgs: ["--enable-automation"],
     colorScheme,
     viewport: { width, height },

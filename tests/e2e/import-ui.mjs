@@ -73,9 +73,33 @@ for (let i = 0; i < buf.length; i++) buf[i] = (i * 131 + 7) % 256;
 writeFileSync(zip, buf);
 const r6 = await file(zip);
 check("a file over the size cap that isn't text (zip/video) says 'nothing found', not 'too long'", r6[0] === ctx.msg("importNothing") && JSON.stringify(await getList(ctx)) === base, r6);
+const bin10 = join(OUT, "import-ui-10mb.bin");
+writeFileSync(bin10, buf.subarray(0, 10_000_000));
+const r8 = await file(bin10);
+check("a binary file under the 20 MB cap but over 5 M characters (10 MB video/zip) says 'nothing found', not 'too long'", r8[0] === ctx.msg("importNothing") && JSON.stringify(await getList(ctx)) === base, r8);
 const txt = join(OUT, "import-ui-big.txt");
 writeFileSync(txt, Buffer.alloc(21_000_000, 0x61));
 const r7 = await file(txt);
 check("a text file over the size cap still says 'too long'", r7[0] === ctx.msg("importTooBig") && JSON.stringify(await getList(ctx)) === base, r7);
 await setList(ctx, null);
 await finish(ctx, check);
+
+for (const [locale, number] of [["ru", "20\u00a0000"], ["de", "20.000"]]) {
+  const lc = await launch({ name: `import-ui-${locale}`, locale, colorScheme: "light" });
+  await closeWelcome(lc);
+  const p = await lc.context.newPage();
+  await p.goto(`chrome-extension://${lc.extId}/list.html`);
+  await p.waitForFunction(() => document.body.dataset.ready === "1");
+  const env = await p.evaluate(() => ({ ui: chrome.i18n.getUILanguage(), intl: Intl.NumberFormat().resolvedOptions().locale, lang: document.documentElement.lang }));
+  await p.evaluate((v) => {
+    document.getElementById("many").open = true;
+    const a = document.querySelector("#manyBox textarea");
+    a.value = v;
+    a.dispatchEvent(new Event("input", { bubbles: true }));
+  }, many);
+  await p.click("#manyBox button");
+  const got = (await until(() => p.evaluate(() => [...document.querySelectorAll("#result p")].map((n) => n.textContent)), (r) => r.length > 0, 60000)).value[0];
+  const want = lc.msg("importResult", number, "0");
+  check(`browser UI language ${locale} (--lang=${locale}): the import count is formatted '${number}'`, got === want && env.ui.startsWith(locale) && env.intl.startsWith(locale), { got, want, env, messages: lc.lang });
+  await finish(lc, check);
+}
