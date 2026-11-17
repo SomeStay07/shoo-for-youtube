@@ -157,6 +157,16 @@ test("a file over 5 MB is not read", () => {
   assert.equal(p.channels.length + p.words.length, 0);
 });
 
+test("binary data over the length cap says nothing was found, not too long", () => {
+  const buf = Buffer.alloc(6_000_000);
+  for (let i = 0; i < buf.length; i++) buf[i] = ((i * 131 + 7) % 255) + 1;
+  const bin = buf.toString("utf8");
+  assert.ok(bin.length > L.IMPORT_MAX_CHARS);
+  assert.equal(L.parseImport(bin).format, "unknown");
+  assert.equal(L.parseImport("\u0000PK".repeat(2_000_000)).format, "unknown");
+  assert.equal(L.parseImport("@a\n".repeat(1_800_000)).format, "too-big");
+});
+
 test("more than 20,000 entries in one import are refused as too big, 20,000 still import", () => {
   const lines = (n) => Array.from({ length: n }, (_, i) => `Channel name ${i}`).join("\n");
   const over = L.parseImport(lines(20_001));

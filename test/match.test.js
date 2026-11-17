@@ -150,8 +150,8 @@ test("channel page slot: handle from the URL, id from the page's identifier only
 });
 
 test("/c/ and /user/ pages reached in the app: the header's own @handle names the channel when the address has neither handle nor ID", () => {
-  assert.deepEqual(L.channelOfPage("/c/veritasium", { docPath: "/watch", metaId: "UCzzzzzzzzzzzzzzzzzzzzzz", headerHandle: "@veritasium" }), { handle: "@veritasium" });
-  assert.deepEqual(L.channelOfPage("/user/1veritasium/videos", { docPath: "/results", headerHandle: " @veritasium " }), { handle: "@veritasium" });
+  assert.deepEqual(L.channelOfPage("/c/veritasium", { docPath: "/watch", metaId: "UCzzzzzzzzzzzzzzzzzzzzzz", headerHandle: "@veritasium" }), { handle: "@veritasium", fromHeader: true });
+  assert.deepEqual(L.channelOfPage("/user/1veritasium/videos", { docPath: "/results", headerHandle: " @veritasium " }), { handle: "@veritasium", fromHeader: true });
   assert.equal(L.channelOfPage("/c/other", { docPath: "/watch", headerHandle: "Veritasium" }), null, "a name is not a handle");
   assert.equal(L.channelOfPage("/c/other", { docPath: "/watch", headerHandle: "" }), null);
   assert.deepEqual(L.channelOfPage("/@kurzgesagt", { docPath: "/watch", headerHandle: "@veritasium" }), { handle: "@kurzgesagt" }, "the address wins over a stale header");
@@ -166,6 +166,34 @@ test("channel header after an in-app move: the name is used and learned only whe
   assert.deepEqual(L.headerSlot(c, { name: "InGenius by Veritasium", handle: "" }), { slot: { handle: "@InGeniusOfficial", name: "InGenius by Veritasium" }, verified: false }, "no @handle row: shown, not learned");
   assert.deepEqual(L.headerSlot({ id: "UCHnyfMqiRRG1u-2MsSQLbXA" }, { name: "Veritasium", handle: "@veritasium" }), { slot: { id: "UCHnyfMqiRRG1u-2MsSQLbXA", name: "Veritasium" }, verified: false }, "/channel/ and /c/ pages: nothing to compare, never learned");
   assert.deepEqual(L.headerSlot(c, { name: "", handle: "@ingeniusofficial" }), { slot: { handle: "@InGeniusOfficial" }, verified: true });
+});
+
+test("/c/ and /user/ pages named by their own header: the header can't vouch for itself, so the name is shown but never learned", () => {
+  const c = L.channelOfPage("/user/1veritasium", { docPath: "/results", headerHandle: "@veritasium" });
+  assert.deepEqual(L.headerSlot(c, { name: "Veritasium", handle: "@veritasium" }), { slot: { handle: "@veritasium", name: "Veritasium" }, verified: false });
+  assert.deepEqual(L.headerSlot(c, { name: "Veritasium", handle: "@VERITASIUM" }).verified, false);
+  assert.deepEqual(L.headerSlot({ handle: "@veritasium" }, { name: "Veritasium", handle: "@veritasium" }).verified, true, "a handle from the address is still checked against the header");
+});
+
+test("after an in-app move the page is read only once the header is the new channel's", () => {
+  const nav = { start: 1000, finish: null, root: "user/minutephysics", handles: ["minutephysics"] };
+  const read = (n, now, pathname, headerHandle) => L.pageWait(n, { now, pathname, headerHandle });
+  assert.equal(read(null, 0, "/user/1veritasium", "@minutephysics"), 0, "a full page load has no move to wait for");
+  assert.ok(read(nav, 1300, "/user/minutephysics", "@minutephysics") > 0, "between yt-navigate-start and yt-navigate-finish nothing is read");
+  const done = { ...nav, finish: 1400 };
+  assert.ok(read(done, 1450, "/user/1veritasium", "@minutephysics") > 0, "the header still shows the channel just left");
+  assert.equal(read(done, 1450, "/user/1veritasium", "@veritasium"), 0, "the header changed to another channel");
+  assert.equal(read(done, 2400, "/user/1veritasium", "@minutephysics"), 0, "same handle after a second: a move between two addresses of one channel");
+  assert.ok(read(done, 1450, "/user/1veritasium", "") > 0, "an empty header is not read yet");
+  assert.equal(read(done, 1450, "/user/minutephysics/videos", "@minutephysics"), 0, "a tab of the same channel");
+  assert.ok(read(done, 2400, "/@veritasium", "@minutephysics") > 0, "an address with a handle waits for a header that agrees with it");
+  assert.equal(read(done, 4400, "/@veritasium", "@other"), 0, "…for three seconds at most");
+  assert.equal(read(done, 1450, "/@veritasium", "@Veritasium"), 0);
+  assert.equal(read(done, 1450, "/watch", ""), 0, "not a channel page");
+  assert.equal(read(nav, 6100, "/user/minutephysics", "@minutephysics"), 0, "a move that never finished stops blocking after five seconds");
+  const chain = { start: 5000, finish: 5300, root: "user/1veritasium", handles: ["minutephysics"] };
+  assert.equal(read(chain, 5310, "/user/vsauce", "@vsauce"), 0, "A to B to C with C's header shown at once");
+  assert.ok(read(chain, 5310, "/user/vsauce", "@minutephysics") > 0, "A to B to C while A's header is still on screen");
 });
 
 test("page kinds: a /playlist page is its own kind, not a channel page or a surface", () => {

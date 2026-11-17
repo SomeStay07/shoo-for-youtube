@@ -55,5 +55,41 @@ check("hiding the shelf's channel with ⊘: the shelf stays while its 'Hidden �
 await page.click('[data-qa="s000000000a"] .shoo-line button');
 const undone = await until(state, (s) => s.shelfCardsHidden === 0 && s.header && s.shelfCardsVisible === 2, 3000);
 check("Undo brings both videos back, header visible", undone.ok, undone.value);
+const LATE = "https://www.youtube.com/results?search_query=shoo-shelf-late";
+const lateHtml = searchPage([shelf([searchCard({ vid: "s000000000c", title: "Late one", handle: "@listedone", name: "Listed One" }), searchCard({ vid: "s000000000d", title: "Late two", handle: "@listedone", name: "Listed One" })])]);
+const inner = /<ytd-page-manager>([\s\S]*)<\/ytd-page-manager>/.exec(lateHtml)[1];
+await serve(ctx.context, LATE, lateHtml.replace(inner, "").replace("</body>", `<template id="later">${inner}</template><script>setTimeout(() => document.querySelector("ytd-page-manager").append(document.getElementById("later").content.cloneNode(true)), 1500)</script></body>`));
+await setList(ctx, LISTED);
+await page.goto(LATE, { waitUntil: "domcontentloaded" });
+const late = await until(() => page.evaluate(() => {
+  const s = document.querySelector("[data-qa-shelf]");
+  return s ? { cards: s.querySelectorAll("[data-shoo-hide]").length, header: s.querySelector("h2").checkVisibility() } : null;
+}), (v) => v && v.cards === 2 && !v.header, 4000);
+check("a search page that arrives in one piece after Shoo is ready: the fully hidden shelf goes, header included", late.ok, late.value);
+
+await setList(ctx, null);
+await page.goto(SEARCH, { waitUntil: "domcontentloaded" });
+await sleep(600);
+const go = (path, watch) => page.evaluate(([p, w]) => {
+  document.dispatchEvent(new CustomEvent("yt-navigate-start"));
+  history.pushState({}, "", p);
+  const pm = document.querySelector("ytd-page-manager");
+  pm.querySelector("ytd-search").hidden = w;
+  let flexy = pm.querySelector("ytd-watch-flexy");
+  if (w && !flexy) pm.insertAdjacentHTML("beforeend", '<ytd-watch-flexy><div id="secondary"><div id="related"></div></div></ytd-watch-flexy>');
+  flexy = pm.querySelector("ytd-watch-flexy");
+  if (flexy) flexy.hidden = !w;
+  document.dispatchEvent(new CustomEvent("yt-navigate-finish"));
+}, [path, watch]);
+const gone = () => page.evaluate(() => document.querySelector("[data-qa-shelf]").hasAttribute("data-shoo-shelf"));
+await go("/watch?v=w000000000a", true);
+await sleep(400);
+await setList(ctx, LISTED);
+await sleep(1200);
+const onWatch = await gone();
+check("on a watch page the search page left in the background is not scanned for shelves", onWatch === false, { shelfMarked: onWatch });
+await go("/results?search_query=shoo-shelf", false);
+const backOnSearch = await until(gone, Boolean, 3000);
+check("…and back on search the fully hidden shelf goes again", backOnSearch.ok, backOnSearch.value);
 await setList(ctx, null);
 await finish(ctx, check);

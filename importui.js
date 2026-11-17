@@ -17,11 +17,12 @@
       return res;
     }
 
-    const tooBig = (file) => file.size > globalThis.ShooLib.IMPORT_MAX_CHARS * 4;
     async function runFile(file) {
-      if (tooBig(file)) {
+      const { IMPORT_MAX_CHARS, looksBinary } = globalThis.ShooLib;
+      if (file.size > IMPORT_MAX_CHARS) {
         const head = await file.slice(0, 8000).text().catch(() => "\u0000");
-        return render({ format: globalThis.ShooLib.looksBinary(head) ? "unknown" : "too-big", found: 0 });
+        if (looksBinary(head)) return render({ format: "unknown", found: 0 });
+        if (file.size > IMPORT_MAX_CHARS * 4) return render({ format: "too-big", found: 0 });
       }
       return run(await file.text());
     }

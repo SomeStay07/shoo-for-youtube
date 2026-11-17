@@ -33,8 +33,11 @@ await page.goto(SEARCH, { waitUntil: "domcontentloaded" });
 await sleep(600);
 await ctx.worker.evaluate(() => {
   const real = OPS.block;
-  OPS.block = () => new Promise(() => {});
-  globalThis.__restoreBlock = () => (OPS.block = real);
+  OPS.block = () => new Promise((r) => (globalThis.__releaseBlock = () => r(null)));
+  globalThis.__restoreBlock = () => {
+    OPS.block = real;
+    globalThis.__releaseBlock?.();
+  };
 });
 await page.hover('[data-qa="a000000000a"] h3');
 await sleep(300);
@@ -49,6 +52,43 @@ const alpha = await page.evaluate(() => {
 });
 check("the worker never answers a block: after the timeout the tab lets go and applies what's in storage (a word added elsewhere hides its video)", caught.ok && Date.now() - t0 >= 8000, { caughtAfterMs: caught.ms, alpha });
 check("…and the card whose block got no answer is shown with 'Not saved'", !alpha.hidden && alpha.lines.some((l) => l.includes(ctx.msg("cardNotSaved"))), alpha);
+await ctx.worker.evaluate(() => globalThis.__restoreBlock?.());
+
+await setList(ctx, null);
+await page.goto(SEARCH, { waitUntil: "domcontentloaded" });
+await sleep(600);
+await ctx.worker.evaluate(() => {
+  const real = OPS.block;
+  let first = true;
+  OPS.block = (m) => {
+    if (!first) return real(m);
+    first = false;
+    return new Promise((r) => setTimeout(r, 13000)).then(() => real(m));
+  };
+  globalThis.__restoreBlock = () => (OPS.block = real);
+});
+const lines = (qa) => page.evaluate((q) => {
+  const b = document.querySelector(`[data-qa="${q}"]`);
+  return { hidden: b.hasAttribute("data-shoo-hide"), shown: b.checkVisibility(), lines: [...b.querySelectorAll(".shoo-line")].map((l) => l.textContent) };
+}, qa);
+for (const qa of ["a000000000a", "g000000000a"]) {
+  await page.hover(`[data-qa="${qa}"] h3`);
+  await sleep(300);
+  await page.click(`[data-qa="${qa}"] .shoo-btn`);
+  await sleep(200);
+}
+const notSaved = (s) => s.lines.some((l) => l.includes(ctx.msg("cardNotSaved")));
+let secondFailed = false;
+const t1 = Date.now();
+while (Date.now() - t1 < 17000) {
+  if (notSaved(await lines("g000000000a"))) secondFailed = true;
+  await sleep(250);
+}
+const stored = ((await getList(ctx))?.channels || []).map((c) => c.handle).sort();
+const first = await lines("a000000000a");
+const second = await lines("g000000000a");
+check("a block queued behind a slow one gets its own 10 s once its turn comes: it lands and never says 'Not saved'", !secondFailed && second.hidden && stored.join() === "@alpha,@gamma", { secondFailed, second, stored });
+check("a block that timed out but landed later: 'Not saved' goes away and the card is hidden as stored", !notSaved(first) && first.hidden && !first.shown, { first, stored });
 await ctx.worker.evaluate(() => globalThis.__restoreBlock?.());
 await setList(ctx, null);
 await finish(ctx, check);

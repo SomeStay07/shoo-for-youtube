@@ -399,7 +399,7 @@
     const out = { format: null, channels: [], words: [], skipped: { patterns: 0, other: 0 } };
     const src = String(text ?? "").replace(/^﻿/, "");
     if (src.length > IMPORT_MAX_CHARS) {
-      out.format = "too-big";
+      out.format = looksBinary(src) ? "unknown" : "too-big";
       return out;
     }
     let json = null;
@@ -623,11 +623,29 @@
   }
 
   function headerSlot(channel, { name = "", handle = "" } = {}) {
+    const { fromHeader, ...rest } = channel;
     const own = String(handle).trim();
     const label = String(name).trim();
-    const verified = Boolean(channel.handle && own && normHandle(own) === normHandle(channel.handle));
-    const stale = Boolean(channel.handle && own && !verified);
-    return { slot: { ...channel, ...(label && !stale ? { name: label } : {}) }, verified };
+    const same = Boolean(rest.handle && own && normHandle(own) === normHandle(rest.handle));
+    const stale = Boolean(rest.handle && own && !same);
+    return { slot: { ...rest, ...(label && !stale ? { name: label } : {}) }, verified: same && !fromHeader };
+  }
+
+  const NAV_MAX_MS = 5000;
+  const HEADER_SAME_MS = 1000;
+  const HEADER_OTHER_MS = 3000;
+  function pageWait(nav, { now = 0, pathname = "", headerHandle = "" } = {}) {
+    if (!nav) return 0;
+    const started = now - nav.start;
+    if (nav.finish == null && started < NAV_MAX_MS) return NAV_MAX_MS - started;
+    const since = now - (nav.finish ?? nav.start + NAV_MAX_MS);
+    const root = channelRoot(pathname);
+    if (!root || root === nav.root) return 0;
+    const own = normHandle(headerHandle);
+    const fromPath = channelOfPath(pathname)?.handle;
+    if (fromPath && own && normHandle(fromPath) !== own && since < HEADER_OTHER_MS) return HEADER_OTHER_MS - since;
+    if ((!own || (nav.handles || []).includes(own)) && since < HEADER_SAME_MS) return HEADER_SAME_MS - since;
+    return 0;
   }
 
   function channelOfPage(pathname, { docPath = "", metaId = "", headerHandle = "" } = {}) {
@@ -637,7 +655,8 @@
     const id = root && root === channelRoot(docPath) && UC.test(String(metaId)) ? String(metaId) : null;
     if (!fromPath && !id) {
       const own = String(headerHandle).trim();
-      return root && /^@\S+$/.test(own) ? parseChannelHref(`/${own}`) : null;
+      const c = root && /^@\S+$/.test(own) ? parseChannelHref(`/${own}`) : null;
+      return c ? { ...c, fromHeader: true } : null;
     }
     return { ...fromPath, ...(id ? { id } : {}) };
   }
@@ -711,6 +730,8 @@
     channelOfPath,
     channelOfPage,
     headerSlot,
+    channelRoot,
+    pageWait,
     translator,
     localizeDocument,
     browserLabel,

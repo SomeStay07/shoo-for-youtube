@@ -109,14 +109,20 @@
     const msg = { ...message, op: `${opBase}-${++opSeq}` };
     inFlight++;
     let timedOut = false;
-    let timer = 0;
-    const giveUp = new Promise((r) => {
-      timer = setTimeout(() => {
-        timedOut = true;
-        r(null);
-      }, WRITE_WAIT_MS);
+    const run = chain.then(() => {
+      let timer = 0;
+      const sent = send(msg);
+      sent.then((res) => {
+        if (timedOut && res !== null && res !== undefined) landedLate(box);
+      }, () => {});
+      const giveUp = new Promise((r) => {
+        timer = setTimeout(() => {
+          timedOut = true;
+          r(null);
+        }, WRITE_WAIT_MS);
+      });
+      return Promise.race([sent, giveUp]).finally(() => clearTimeout(timer));
     });
-    const run = chain.then(() => Promise.race([send(msg), giveUp])).finally(() => clearTimeout(timer));
     chain = run.catch(() => null);
     return run.then(
       (res) => {
@@ -136,6 +142,15 @@
         return null;
       },
     );
+  }
+
+  function landedLate(box) {
+    if (box?.id === "shoo-page") {
+      if (pageFailed === location.href) pageFailed = null;
+      if (box.dataset.sig === "reload") delete box.dataset.sig;
+    } else clearFailed(box);
+    catchUp();
+    syncPage();
   }
 
   function catchUp() {
@@ -256,9 +271,30 @@
     return [...(header?.querySelectorAll("yt-content-metadata-view-model [role=text]") || [])].map(text).find((s) => /^@\S+$/.test(s)) || "";
   }
 
-  function pageChannel() {
-    const header = page === "channel" ? document.querySelector(`${CHANNEL_PAGE}:not([hidden]) yt-page-header-view-model`) : null;
-    return L.channelOfPage(location.pathname, { docPath, metaId: document.querySelector('meta[itemprop="identifier"][content^="UC"]')?.content, headerHandle: headerHandle(header) });
+  const pageHeader = () => (page === "channel" ? document.querySelector(`${CHANNEL_PAGE}:not([hidden]) yt-page-header-view-model`) : null);
+
+  let nav = null;
+  let shownPath = location.pathname;
+  let retryTimer = 0;
+  let retryAt = 0;
+  function notYet(handle) {
+    const now = performance.now();
+    const ms = L.pageWait(nav, { now, pathname: location.pathname, headerHandle: handle });
+    if (ms > 0 && (!retryTimer || now + ms < retryAt)) {
+      clearTimeout(retryTimer);
+      retryAt = now + ms;
+      retryTimer = setTimeout(() => {
+        retryTimer = 0;
+        syncNow();
+      }, ms + 20);
+    }
+    return ms > 0;
+  }
+
+  function pageChannel(header = pageHeader()) {
+    const own = headerHandle(header);
+    const c = L.channelOfPage(location.pathname, { docPath, metaId: document.querySelector('meta[itemprop="identifier"][content^="UC"]')?.content, headerHandle: own });
+    return c?.fromHeader && notYet(own) ? null : c;
   }
 
   function computeExempt() {
@@ -429,7 +465,7 @@
       if (name) {
         let after = name;
         while (after.nextElementSibling?.matches("span[aria-label]:not([role])") && !text(after.nextElementSibling)) after = after.nextElementSibling;
-        return { node: after, kind: "shoo-lockup" };
+        return { node: after, kind: "shoo-lockup", pin: row, card };
       }
       if (row) return { node: row, append: true, kind: "shoo-lockup" };
     }
@@ -481,12 +517,38 @@
     const focused = document.activeElement === btn;
     btn.classList.toggle("shoo-lockup", anchor.kind === "shoo-lockup");
     btn.classList.toggle("shoo-float", anchor.kind === "shoo-float");
+    btn.classList.toggle("shoo-pin", Boolean(anchor.pin));
+    btn.style.removeProperty("left");
+    btn.style.removeProperty("right");
+    if (pinned !== anchor.pin) {
+      pinned?.removeAttribute(PIN);
+      pinned = anchor.pin || null;
+      pinned?.setAttribute(PIN, "");
+    }
     if (anchor.append) {
       if (anchor.node.lastElementChild !== btn) anchor.node.append(btn);
     } else if (anchor.node.nextElementSibling !== btn) anchor.node.after(btn);
+    if (anchor.pin) pin(btn, anchor.pin, anchor.node, anchor.card);
     if (focused && document.activeElement !== btn) btn.focus({ preventScroll: true });
     labelButton(info);
     return true;
+  }
+
+  const PIN = "data-shoo-pin";
+  let pinned = null;
+  function pin(btn, row, after, card) {
+    const r = row.getBoundingClientRect();
+    const a = after.getBoundingClientRect();
+    const rtl = getComputedStyle(row).direction === "rtl";
+    let max = row.clientWidth - 24;
+    for (const b of card.querySelectorAll("button")) {
+      if (b === btn || row.contains(b)) continue;
+      const m = b.getBoundingClientRect();
+      if (!m.width || m.top >= r.bottom || m.bottom <= r.top || m.right <= r.left || m.left >= r.right) continue;
+      max = Math.min(max, (rtl ? r.right - m.right : m.left - r.left) - 48);
+    }
+    const x = rtl ? r.right - a.left : a.right - r.left;
+    btn.style.setProperty(rtl ? "right" : "left", `${Math.round(Math.max(0, Math.min(x + 4, max)))}px`);
   }
 
   let pointerTimer = 0;
@@ -732,7 +794,8 @@
 
   const SHELF = "ytd-shelf-renderer, grid-shelf-view-model";
   function syncShelves() {
-    for (const shelf of document.querySelectorAll(`ytd-search ${SHELF}`)) {
+    if (page !== "search") return;
+    for (const shelf of document.querySelectorAll(`ytd-search:not([hidden]) ${SHELF}`)) {
       let boxes = 0;
       let gone = 0;
       for (const card of shelf.querySelectorAll(CARD)) {
@@ -776,6 +839,8 @@
   }
 
   function ownerInfo() {
+    const header = pageHeader();
+    if (notYet(headerHandle(header))) return null;
     if (page === "watch") {
       const owner = document.querySelector(":is(ytd-watch-flexy, ytd-watch-grid):not([hidden]) ytd-watch-metadata #owner");
       const renderer = owner?.querySelector("ytd-video-owner-renderer");
@@ -788,9 +853,8 @@
       return { host: owner, place: (node) => owner.append(node), line: (node) => node.previousElementSibling === row || row.after(node), slot: { ...(links[0] || {}), ...(name ? { name } : {}) }, source: "watch" };
     }
     if (page === "channel") {
-      const header = document.querySelector(`${CHANNEL_PAGE}:not([hidden]) yt-page-header-view-model`);
       const actions = header?.querySelector("yt-flexible-actions-view-model");
-      const c = pageChannel();
+      const c = pageChannel(header);
       if (!actions || !c) return null;
       const { slot, verified } = L.headerSlot(c, { name: text(header.querySelector("h1")), handle: headerHandle(header) });
       return { host: actions.parentElement, place: (node) => actions.after(node), slot, verified, source: "channel" };
@@ -842,6 +906,9 @@
       const key = L.entryKey(listed.entry);
       box.replaceChildren(el("span", { class: "shoo-text" }, t("pageHidden")), button(t("unhideChannel"), () => {
         if (!alive()) return showReload(box);
+        const now = ownerInfo();
+        const still = now && L.matchSlot(matcher, now.slot);
+        if (!still || L.entryKey(still.entry) !== key) return redraw(box);
         localChange(L.removeChannel(list, key).list);
         write({ type: "unhide", key }, box);
         document.querySelector("#shoo-page button")?.focus();
@@ -850,15 +917,17 @@
     }
     box.replaceChildren(button(t("pageHide"), () => {
       if (!alive()) return showReload(box);
-      const slot = info.slot;
+      const now = ownerInfo();
+      if (!now || now.source !== info.source || L.entryKey(now.slot) !== L.entryKey(info.slot)) return redraw(box);
+      const slot = now.slot;
       const sentAt = Date.now();
-      const local = L.addChannel(list, slot, info.source, sentAt);
+      const local = L.addChannel(list, slot, now.source, sentAt);
       if (!local.key) return;
       pageState = { href: location.href, key: local.key, prev: local.prev, index: local.index, name: labelOf(slot) };
       const state = pageState;
       localChange(local.list);
       document.querySelector("#shoo-page button")?.focus();
-      write({ type: "block", slot, source: info.source }, box).then((res) => {
+      write({ type: "block", slot, source: now.source }, box).then((res) => {
         const settled = L.settleBlock(local, res, sentAt);
         if (settled) Object.assign(state, settled);
       });
@@ -866,20 +935,31 @@
     box.querySelector("button.shoo-main")?.prepend(glyph());
   }
 
+  function redraw(box) {
+    const focused = box.contains(document.activeElement);
+    delete box.dataset.sig;
+    syncPage();
+    if (focused) document.querySelector("#shoo-page button")?.focus();
+  }
+
+  function syncNow() {
+    if (ready && page === "channel") {
+      const now = computeExempt();
+      if (now !== exempt) {
+        exempt = now;
+        sweepActive();
+      }
+    }
+    syncPage();
+    syncAllHidden();
+  }
+
   let syncTimer = 0;
   function scheduleSync() {
     if (syncTimer) return;
     syncTimer = setTimeout(() => {
       syncTimer = 0;
-      if (ready && page === "channel") {
-        const now = computeExempt();
-        if (now !== exempt) {
-          exempt = now;
-          sweepActive();
-        }
-      }
-      syncPage();
-      syncAllHidden();
+      syncNow();
     }, 250);
   }
 
@@ -1014,6 +1094,7 @@
     healthDirty = true;
     if (!ready) return;
     for (const card of node.querySelectorAll(CARD)) apply(card);
+    scheduleSync();
   }
 
   const pageParts = new WeakMap();
@@ -1074,13 +1155,17 @@
   syncAllHidden = timed(syncAllHidden);
 
   document.addEventListener("yt-navigate-start", timed(() => {
+    nav = { start: performance.now(), finish: null, root: L.channelRoot(shownPath), handles: [...document.querySelectorAll(`${CHANNEL_PAGE} yt-page-header-view-model`)].map((h) => L.normHandle(headerHandle(h))).filter(Boolean) };
     closeMenus();
     clearSlots();
     setReveal(false);
     pageState = null;
+    document.getElementById("shoo-page")?.remove();
   }));
 
   document.addEventListener("yt-navigate-finish", timed(() => {
+    if (nav) nav.finish = performance.now();
+    shownPath = location.pathname;
     const before = page;
     page = L.pageOf(location.pathname);
     if (before !== page || page !== "watch") cameFromResults = before === "search" && (page === "watch" || page === "channel");
