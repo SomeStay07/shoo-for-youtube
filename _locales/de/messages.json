@@ -279,7 +279,7 @@
     "message": "Noch ohne Namen: Shoo erkennt den Kanal an den meisten Stellen nicht. Blende eins seiner Videos einmal aus, dann merkt Shoo ihn sich."
   },
   "listMisses": {
-    "message": "Neben dem Player und bei Kollaborationen zeigt YouTube nur den Kanalnamen, also vergleicht Shoo dort nach Namen. Dabei kann es einen gleichnamigen Kanal mit ausblenden und einen umbenannten verpassen, bis es eines seiner Videos in der Suche sieht. Kanäle, die nur mit Namen auf die Liste kamen (eingefügte Namen, Importe aus Channel Blocker, Ausblenden neben dem Player), vergleicht Shoo überall nach Namen. Eine Umbenennung bekommt es nicht mit. Nennt eine Kollaboration nur einige Kanäle und zählt den Rest, sieht Shoo die gezählten nicht. Im Shorts-Regal der Suche wirken nur Wörter."
+    "message": "Neben dem Player und bei Kollaborationen zeigt YouTube nur den Kanalnamen, also vergleicht Shoo dort nach Namen. Dabei kann es einen gleichnamigen Kanal mit ausblenden und einen umbenannten verpassen, bis es eines seiner Videos in der Suche sieht. Kanäle, die nur mit Namen auf die Liste kamen (eingefügte Namen, Importe aus Channel Blocker, Ausblenden neben dem Player), vergleicht Shoo überall nach Namen. Eine Umbenennung bekommt es nicht mit. Nennt eine Kollaboration nur einige Kanäle und zählt den Rest, sieht Shoo die gezählten nicht. Playlists und Mixe, die du öffnest, bleiben, wie sie sind: auf der Playlist-Seite und neben dem Player. Im Shorts-Regal der Suche wirken nur Wörter."
   },
   "listEmpty": {
     "message": "Die Liste ist leer. Blende einen Kanal über eines seiner Videos auf YouTube aus oder füg oben ein Wort hinzu."

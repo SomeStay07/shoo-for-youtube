@@ -105,6 +105,20 @@ for (const loc of WANT) {
       return { A, B };
     }, [M.welcomeTitle.message, B_ROWS.welcomeTitle[loc]]);
     check(`${loc} ${scheme}: welcome with a classic scrollbar (html{overflow-y:scroll}) fits, A and B titles in <= 2 lines`, scrollbar.A.width <= scrollbar.A.client && scrollbar.B.width <= scrollbar.B.client && scrollbar.A.lines <= 2 && scrollbar.B.lines <= 2, scrollbar);
+    const listPage = await ctx.context.newPage();
+    for (const width of [420, 1280]) {
+      await listPage.setViewportSize({ width, height: 900 });
+      if (!listPage.url().includes("list.html")) await listPage.goto(`chrome-extension://${ctx.extId}/list.html`);
+      await listPage.waitForFunction(() => document.body.dataset.ready === "1");
+      const lo = await overflow(listPage, width);
+      const help = await listPage.evaluate(() => {
+        const p = document.querySelector('[data-i18n="listMisses"]');
+        const r = p.getBoundingClientRect();
+        return { chars: p.textContent.length, visible: p.checkVisibility(), right: Math.round(r.right), lines: Math.round(r.height / parseFloat(getComputedStyle(p).lineHeight)) };
+      });
+      await listPage.screenshot({ path: join(OUT, `list-${loc}-${scheme}-${width}.png`), fullPage: true });
+      check(`${loc} ${scheme}: list page ${width} px fits, the 'what it can't do' help line included`, lo.docWidth <= width && lo.bad.length === 0 && help.visible && help.chars === M.listMisses.message.length && help.right <= width, { ...lo, help });
+    }
     await finish(ctx, check);
   }
 }

@@ -279,7 +279,7 @@
     "message": "Aún sin nombre: Shoo no lo reconoce en la mayoría de los lugares. Oculta uno de sus videos una vez y Shoo lo recordará."
   },
   "listMisses": {
-    "message": "Junto al reproductor y en las colaboraciones, YouTube muestra solo el nombre del canal, así que Shoo compara por nombre. Ahí puede ocultar otro canal con el mismo nombre y pasar por alto un canal que cambió de nombre hasta ver alguno de sus videos en la búsqueda. Los canales agregados solo por nombre (nombres pegados, importaciones de Channel Blocker, canales ocultados junto al reproductor) se comparan por nombre en todas partes. Si cambian de nombre, Shoo no se entera. Si una colaboración nombra algunos canales y solo cuenta el resto, Shoo no ve los contados. En el estante de Shorts de la búsqueda solo funcionan las palabras."
+    "message": "Junto al reproductor y en las colaboraciones, YouTube muestra solo el nombre del canal, así que Shoo compara por nombre. Ahí puede ocultar otro canal con el mismo nombre y pasar por alto un canal que cambió de nombre hasta ver alguno de sus videos en la búsqueda. Los canales agregados solo por nombre (nombres pegados, importaciones de Channel Blocker, canales ocultados junto al reproductor) se comparan por nombre en todas partes. Si cambian de nombre, Shoo no se entera. Si una colaboración nombra algunos canales y solo cuenta el resto, Shoo no ve los contados. Las playlists y los mixes que abres quedan como están, en la página de la playlist y junto al reproductor. En el estante de Shorts de la búsqueda solo funcionan las palabras."
   },
   "listEmpty": {
     "message": "La lista está vacía. Oculta un canal desde uno de sus videos en YouTube o agrega una palabra arriba."

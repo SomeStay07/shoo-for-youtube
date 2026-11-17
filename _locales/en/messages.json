@@ -279,7 +279,7 @@
     "message": "No name yet: Shoo misses this channel in most places. Hide one of its videos once and Shoo will remember it."
   },
   "listMisses": {
-    "message": "Next to the player and in collabs, YouTube shows only a channel's name, so Shoo matches by name there. It may also hide another channel with the same name, and it can miss a renamed channel until it sees one of its videos in search. Channels added by name alone (pasted names, Channel Blocker imports, hides from next to the player) are matched by name everywhere and aren't updated after a rename. When a collab names some channels and only counts the rest, Shoo can't see the counted ones. In the row of Shorts in search, only words work."
+    "message": "Next to the player and in collabs, YouTube shows only a channel's name, so Shoo matches by name there. It may also hide another channel with the same name, and it can miss a renamed channel until it sees one of its videos in search. Channels added by name alone (pasted names, Channel Blocker imports, hides from next to the player) are matched by name everywhere and aren't updated after a rename. When a collab names some channels and only counts the rest, Shoo can't see the counted ones. Playlists and mixes you open stay as they are, on the playlist page and next to the player. In the row of Shorts in search, only words work."
   },
   "listEmpty": {
     "message": "The list is empty. Hide a channel from one of its videos on YouTube, or add a word above."
