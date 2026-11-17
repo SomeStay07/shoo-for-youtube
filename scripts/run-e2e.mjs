@@ -31,6 +31,8 @@ const SUITES = {
     ["shelf", "r3"],
     ["channel-c", "r3"],
     ["r3-fixes", "r3"],
+    ["back-forward", "r4"],
+    ["grid-live", "r4", { nt: /NOT TESTABLE live: / }],
   ],
   long: [
     ["stick", "3", { env: { CYCLES: "6" }, timeoutMs: 60 * 60 * 1000 }],

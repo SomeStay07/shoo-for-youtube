@@ -652,6 +652,36 @@
     return 0;
   }
 
+  function pageKey(pathname, search = "") {
+    const p = String(pathname || "/");
+    const q = new URLSearchParams(search);
+    if (p === "/watch") return `${p}?v=${q.get("v") || ""}`;
+    if (p === "/results") return `${p}?search_query=${q.get("search_query") || ""}`;
+    return p;
+  }
+
+  const PIN_SIZE = 24;
+  const PIN_AFTER = 4;
+  const PIN_CLEAR = 24;
+  function rectGap(a, b) {
+    const dx = Math.max(a.left - b.right, b.left - a.right, 0);
+    const dy = Math.max(a.top - b.bottom, b.top - a.bottom, 0);
+    return Math.hypot(dx, dy);
+  }
+  const MENU_SIZE = 40;
+  function menuSlot(point, rtl = false) {
+    const left = rtl ? point.left : point.left - MENU_SIZE;
+    return { left, right: left + MENU_SIZE, top: point.top, bottom: point.top + MENU_SIZE };
+  }
+  function pinSpot({ rtl = false, box, row, end, buttons = [] }) {
+    const top = Math.round((row.top + row.bottom) / 2 - PIN_SIZE / 2);
+    const left = rtl ? Math.max(end.left, row.left) - PIN_AFTER - PIN_SIZE : Math.min(end.right, row.right) + PIN_AFTER;
+    const spot = { left, right: left + PIN_SIZE, top, bottom: top + PIN_SIZE };
+    const fits = spot.left >= box.left && spot.right <= box.right && buttons.every((b) => rectGap(spot, b) >= PIN_CLEAR);
+    if (!fits) return { kind: "corner" };
+    return rtl ? { kind: "pin", right: Math.round(box.right - spot.right), top: Math.round(top - box.top) } : { kind: "pin", left: Math.round(left - box.left), top: Math.round(top - box.top) };
+  }
+
   function channelOfPage(pathname, { docPath = "", metaId = "", headerHandle = "" } = {}) {
     const fromPath = channelOfPath(pathname);
     if (fromPath?.id) return fromPath;
@@ -736,6 +766,9 @@
     headerSlot,
     channelRoot,
     pageWait,
+    pageKey,
+    pinSpot,
+    menuSlot,
     translator,
     localizeDocument,
     browserLabel,

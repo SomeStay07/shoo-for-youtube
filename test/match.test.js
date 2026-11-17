@@ -196,6 +196,42 @@ test("after an in-app move the page is read only once the header is the new chan
   assert.ok(read(chain, 5310, "/user/vsauce", "@minutephysics") > 0, "A to B to C while A's header is still on screen");
 });
 
+test("page key: what counts as another page for the page button", () => {
+  assert.equal(L.pageKey("/@veritasium", ""), "/@veritasium");
+  assert.equal(L.pageKey("/user/minutephysics", "?app=desktop"), "/user/minutephysics");
+  assert.equal(L.pageKey("/watch", "?v=abc&t=30s&list=PL1&index=3"), "/watch?v=abc");
+  assert.notEqual(L.pageKey("/watch", "?v=abc"), L.pageKey("/watch", "?v=xyz"));
+  assert.equal(L.pageKey("/results", "?search_query=cats&sp=EgIQAQ"), "/results?search_query=cats");
+  assert.notEqual(L.pageKey("/c/inanutshell", ""), L.pageKey("/user/minutephysics", ""));
+});
+
+test("Back/Forward between channel pages: a move first seen at yt-navigate-finish waits for the header like a forward move", () => {
+  const back = { start: 1000, finish: 1000, root: "c/inanutshell", handles: ["vsauce"] };
+  const read = (n, now, pathname, headerHandle) => L.pageWait(n, { now, pathname, headerHandle });
+  assert.ok(read(back, 1010, "/user/minutephysics", "@Vsauce") > 0, "header of the page just left");
+  assert.equal(read(back, 1060, "/user/minutephysics", "@MinutePhysics"), 0, "the page's own header");
+  assert.ok(read({ ...back, root: "user/minutephysics", handles: ["minutephysics"] }, 1010, "/@Vsauce", "@MinutePhysics") > 0, "a handle in the address waits for a header that agrees");
+});
+
+const rect = (left, top, right, bottom) => ({ left, top, right, bottom });
+test("grid ⊘ spot: right after the name and badge, never on them, at least 24 px from every YouTube button", () => {
+  const box = rect(96, 340, 315, 660);
+  const row = rect(96, 596, 234, 616);
+  const end = rect(219, 600, 231, 612);
+  assert.deepEqual(L.pinSpot({ box, row, end, buttons: [] }), { kind: "pin", left: 139, top: 254 }, "free: 4 px after the badge, centred on the row");
+  assert.deepEqual(L.pinSpot({ box, row, end, buttons: [rect(285, 566, 325, 606)] }), { kind: "pin", left: 139, top: 254 }, "⋮ 26 px away");
+  assert.equal(L.pinSpot({ box, row, end, buttons: [rect(275, 566, 315, 606)] }).kind, "corner", "⋮ 16 px away");
+  assert.equal(L.pinSpot({ box: rect(813, 357, 976, 642), row: rect(813, 578, 976, 598), end: rect(962, 581, 976, 595), buttons: [rect(946, 526, 986, 566)] }).kind, "corner", "/podcasts at 1000: ⋮ above-right, 10 px from where ⊘ would go");
+  assert.equal(L.pinSpot({ box: rect(813, 357, 976, 642), row: rect(813, 578, 976, 598), end: rect(962, 581, 976, 595), buttons: [] }).kind, "corner", "no room inside the card after the badge");
+  assert.equal(L.pinSpot({ box: rect(16, 377, 299, 624), row: rect(16, 586, 299, 604), end: rect(233, 588, 247, 602), buttons: [rect(259, 584, 299, 624)] }).kind, "corner", "watch grid: ⋮ level with the name row");
+  assert.deepEqual(L.pinSpot({ box: rect(16, 377, 299, 624), row: rect(16, 565, 254, 583), end: rect(43, 567, 57, 581), buttons: [rect(259, 563, 299, 603)] }), { kind: "pin", left: 45, top: 185 });
+  assert.deepEqual(L.pinSpot({ box, row: rect(96, 596, 234, 616), end: rect(150, 600, 400, 612), buttons: [] }).kind, "pin", "a name clipped by its row: after the row's visible end");
+  const menu = L.menuSlot({ left: 325, top: 566, right: 325, bottom: 566 });
+  assert.deepEqual(menu, { left: 285, right: 325, top: 566, bottom: 606 }, "⋮ not drawn yet: its empty slot marks where it will be");
+  assert.equal(L.pinSpot({ box, row, end, buttons: [L.menuSlot({ left: 315, top: 566 })] }).kind, "corner", "an undrawn ⋮ 16 px away counts like a drawn one");
+  assert.deepEqual(L.pinSpot({ rtl: true, box: rect(100, 0, 400, 300), row: rect(200, 200, 400, 220), end: rect(250, 200, 300, 220), buttons: [] }), { kind: "pin", right: 154, top: 198 });
+});
+
 test("page kinds: a /playlist page is its own kind, not a channel page or a surface", () => {
   assert.equal(L.pageOf("/playlist"), "playlist");
   assert.equal(L.pageOf("/@someone/playlists"), "channel");

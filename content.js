@@ -275,6 +275,8 @@
 
   let nav = null;
   let shownPath = location.pathname;
+  let shownKey = L.pageKey(location.pathname, location.search);
+  let lastHref = location.href;
   let retryTimer = 0;
   let retryAt = 0;
   function notYet(handle) {
@@ -461,11 +463,11 @@
   function anchorOf(card, box) {
     if (card.matches("yt-lockup-view-model")) {
       const row = card.querySelector("yt-content-metadata-view-model [role=group]");
-      const name = box !== card && nameParts(row).at(-1);
+      const name = (box !== card || card.closest("ytd-watch-grid")) && nameParts(row).at(-1);
       if (name) {
         let after = name;
         while (after.nextElementSibling?.matches("span[aria-label]:not([role])") && !text(after.nextElementSibling)) after = after.nextElementSibling;
-        return { node: after, kind: "shoo-lockup", pin: row, card };
+        return { node: box, append: true, kind: "shoo-lockup", pin: { row, name, after } };
       }
       if (row) return { node: row, append: true, kind: "shoo-lockup" };
     }
@@ -490,6 +492,7 @@
   }
 
   function dropButton() {
+    sizes.disconnect();
     closeMenus();
     current?.box.removeAttribute("data-shoo-card");
     current = null;
@@ -512,43 +515,52 @@
       current?.box.removeAttribute("data-shoo-card");
       box.setAttribute("data-shoo-card", "");
     }
-    current = { card, box };
     const anchor = anchorOf(card, box);
+    current = { card, box, pin: anchor.pin || null };
     const focused = document.activeElement === btn;
-    btn.classList.toggle("shoo-lockup", anchor.kind === "shoo-lockup");
-    btn.classList.toggle("shoo-float", anchor.kind === "shoo-float");
-    btn.classList.toggle("shoo-pin", Boolean(anchor.pin));
-    btn.style.removeProperty("left");
-    btn.style.removeProperty("right");
-    if (pinned !== anchor.pin) {
-      pinned?.removeAttribute(PIN);
-      pinned = anchor.pin || null;
-      pinned?.setAttribute(PIN, "");
-    }
     if (anchor.append) {
       if (anchor.node.lastElementChild !== btn) anchor.node.append(btn);
     } else if (anchor.node.nextElementSibling !== btn) anchor.node.after(btn);
-    if (anchor.pin) pin(btn, anchor.pin, anchor.node, anchor.card);
+    sizes.disconnect();
+    if (anchor.pin) {
+      pin(btn, box, anchor.pin);
+      for (const node of new Set([box, anchor.pin.row, anchor.pin.name, anchor.pin.after])) sizes.observe(node);
+    } else setKind(btn, anchor.kind);
     if (focused && document.activeElement !== btn) btn.focus({ preventScroll: true });
     labelButton(info);
     return true;
   }
 
-  const PIN = "data-shoo-pin";
-  let pinned = null;
-  function pin(btn, row, after, card) {
-    const r = row.getBoundingClientRect();
-    const a = after.getBoundingClientRect();
-    const rtl = getComputedStyle(row).direction === "rtl";
-    let max = row.clientWidth - 24;
-    for (const b of card.querySelectorAll("button")) {
-      if (b === btn || row.contains(b)) continue;
-      const m = b.getBoundingClientRect();
-      if (!m.width || m.top >= r.bottom || m.bottom <= r.top || m.right <= r.left || m.left >= r.right) continue;
-      max = Math.min(max, (rtl ? r.right - m.right : m.left - r.left) - 48);
+  function setKind(btn, kind, spot = null) {
+    btn.classList.toggle("shoo-lockup", kind === "shoo-lockup");
+    btn.classList.toggle("shoo-float", kind === "shoo-float");
+    btn.classList.toggle("shoo-pin", Boolean(spot));
+    for (const side of ["left", "right", "top"]) {
+      if (spot && side in spot) btn.style.setProperty(side, `${spot[side]}px`);
+      else btn.style.removeProperty(side);
     }
-    const x = rtl ? r.right - a.left : a.right - r.left;
-    btn.style.setProperty(rtl ? "right" : "left", `${Math.round(Math.max(0, Math.min(x + 4, max)))}px`);
+  }
+
+  function pin(btn, box, { row, after }) {
+    const buttons = [];
+    for (const b of box.querySelectorAll("button, [role=button]")) {
+      if (b === btn || b.closest(OWN)) continue;
+      const m = b.getBoundingClientRect();
+      if (m.width && m.height) buttons.push(m);
+    }
+    const rtl = getComputedStyle(row).direction === "rtl";
+    for (const slot of box.querySelectorAll("yt-lockup-metadata-view-model > :empty")) {
+      const m = slot.getBoundingClientRect();
+      if (!m.width && !m.height && getComputedStyle(slot).position === "absolute") buttons.push(L.menuSlot(m, rtl));
+    }
+    const spot = L.pinSpot({ rtl, box: box.getBoundingClientRect(), row: row.getBoundingClientRect(), end: after.getBoundingClientRect(), buttons });
+    if (spot.kind === "pin") setKind(btn, "shoo-lockup", spot);
+    else setKind(btn, "shoo-float");
+  }
+
+  const sizes = new ResizeObserver(timed(() => repin()));
+  function repin() {
+    if (current?.pin && shared?.parentElement === current.box && current.pin.row.isConnected) pin(shared, current.box, current.pin);
   }
 
   let pointerTimer = 0;
@@ -857,7 +869,7 @@
       const c = pageChannel(header);
       if (!actions || !c) return null;
       const { slot, verified } = L.headerSlot(c, { name: text(header.querySelector("h1")), handle: headerHandle(header) });
-      return { host: actions.parentElement, place: (node) => actions.after(node), slot, verified, source: "channel" };
+      return { host: actions.parentElement, place: (node) => actions.after(node), slot, verified, source: "channel", head: L.normHandle(headerHandle(header)) };
     }
     return null;
   }
@@ -871,6 +883,7 @@
   }
 
   function syncPage() {
+    moved();
     let box = document.getElementById("shoo-page");
     const failed = pageFailed === location.href && box?.dataset.sig === "reload";
     const info = ready && (alive() || failed) ? ownerInfo() : null;
@@ -884,6 +897,7 @@
     const listed = just ? null : L.matchSlot(matcher, info.slot);
     const sig = just ? `just:${just.key}:${cameFromResults}` : listed ? `listed:${L.entryKey(listed.entry)}` : `button:${JSON.stringify(info.slot)}`;
     placePage(box, info, Boolean(just || listed));
+    box.dataset.head = info.head || "";
     if (listed && info.source === "channel" && info.verified) {
       const patch = L.learnFrom(listed.entry, info.slot, listed.by);
       if (patch) learn({ entry: listed.entry, learn: patch });
@@ -906,6 +920,7 @@
       const key = L.entryKey(listed.entry);
       box.replaceChildren(el("span", { class: "shoo-text" }, t("pageHidden")), button(t("unhideChannel"), () => {
         if (!alive()) return showReload(box);
+        if (moved() || !box.isConnected) return;
         const now = ownerInfo();
         const still = now && L.matchSlot(matcher, now.slot);
         if (!still || L.entryKey(still.entry) !== key) return redraw(box);
@@ -917,6 +932,7 @@
     }
     box.replaceChildren(button(t("pageHide"), () => {
       if (!alive()) return showReload(box);
+      if (moved() || !box.isConnected) return;
       const now = ownerInfo();
       if (!now || now.source !== info.source || L.entryKey(now.slot) !== L.entryKey(info.slot)) return redraw(box);
       const slot = now.slot;
@@ -933,6 +949,13 @@
       });
     }, { class: "shoo-main", title: t("cardHideTip", labelOf(info.slot)) }));
     box.querySelector("button.shoo-main")?.prepend(glyph());
+  }
+
+  function staleHead() {
+    const box = page === "channel" && document.getElementById("shoo-page");
+    if (!box || box.dataset.head === undefined || L.normHandle(headerHandle(pageHeader())) === box.dataset.head) return;
+    box.remove();
+    syncPage();
   }
 
   function redraw(box) {
@@ -1026,9 +1049,12 @@
     if (!ready) return;
     depth++;
     const t0 = performance.now();
+    moved();
+    let again = false;
     for (const r of records) {
       if (ownOnly(r)) continue;
       const node = r.target;
+      if (current?.pin && r.type === "childList" && current.box.contains(node)) again = true;
       let info = targets.get(node);
       if (info === undefined) {
         let near = nearest.get(node);
@@ -1074,6 +1100,8 @@
     for (const card of dirty) if (card.isConnected) apply(card);
     dirty.clear();
     if (page === "watch" || page === "channel" || page === "search") scheduleSync();
+    if (page === "channel") staleHead();
+    if (again) repin();
     const dt = performance.now() - t0;
     depth--;
     stats.calls++;
@@ -1154,16 +1182,35 @@
   syncPage = timed(syncPage);
   syncAllHidden = timed(syncAllHidden);
 
-  document.addEventListener("yt-navigate-start", timed(() => {
+  function beginMove() {
     nav = { start: performance.now(), finish: null, root: L.channelRoot(shownPath), handles: [...document.querySelectorAll(`${CHANNEL_PAGE} yt-page-header-view-model`)].map((h) => L.normHandle(headerHandle(h))).filter(Boolean) };
     closeMenus();
     clearSlots();
     setReveal(false);
     pageState = null;
     document.getElementById("shoo-page")?.remove();
+  }
+
+  function moved() {
+    if (location.href === lastHref) return false;
+    lastHref = location.href;
+    const key = L.pageKey(location.pathname, location.search);
+    if (key === shownKey) return false;
+    shownKey = key;
+    if (!nav || nav.finish != null) {
+      beginMove();
+      nav.finish = nav.start;
+    } else document.getElementById("shoo-page")?.remove();
+    return true;
+  }
+
+  document.addEventListener("yt-navigate-start", timed(beginMove));
+  window.addEventListener("popstate", timed(() => {
+    moved();
   }));
 
   document.addEventListener("yt-navigate-finish", timed(() => {
+    moved();
     if (nav) nav.finish = performance.now();
     shownPath = location.pathname;
     const before = page;

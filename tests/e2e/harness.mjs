@@ -264,3 +264,34 @@ export async function openRealPopup(ctx, frontPage) {
   };
   return page;
 }
+
+export async function forceWatchGrid(page) {
+  await page.addInitScript(() => {
+    const on = { kevlar_watch_grid: true };
+    const patch = (f) => {
+      if (f && typeof f === "object") Object.assign(f, on);
+      return f;
+    };
+    const hooked = new WeakSet();
+    const hookCfg = (cfg) => {
+      if (!cfg || typeof cfg !== "object" || hooked.has(cfg)) return;
+      hooked.add(cfg);
+      let v = patch(cfg.EXPERIMENT_FLAGS);
+      try {
+        Object.defineProperty(cfg, "EXPERIMENT_FLAGS", { configurable: true, enumerable: true, get: () => v, set: (n) => (v = patch(n)) });
+      } catch {}
+    };
+    const hookProp = (obj, name, onValue) => {
+      let v = obj[name];
+      if (v) onValue(v);
+      try {
+        Object.defineProperty(obj, name, { configurable: true, enumerable: true, get: () => v, set: (n) => {
+          v = n;
+          if (n) onValue(n);
+        } });
+      } catch {}
+    };
+    hookProp(window, "yt", (y) => hookProp(y, "config_", hookCfg));
+    hookProp(window, "ytcfg", (c) => hookProp(c, "data_", hookCfg));
+  });
+}

@@ -111,15 +111,10 @@ html[dark] :is(.shoo-btn, .shoo-line, .shoo-reason, .shoo-menu, .shoo-page, .sho
   display: inline-flex;
 }
 
-[data-shoo-pin] {
-  position: relative;
-}
-
 .shoo-btn.shoo-pin {
   position: absolute;
-  top: 50%;
   z-index: 1;
-  margin: -12px 0 0;
+  margin: 0;
   background: var(--shoo-page-bg);
 }
 
@@ -137,7 +132,7 @@ html[dark] :is(.shoo-btn, .shoo-line, .shoo-reason, .shoo-menu, .shoo-page, .sho
 .shoo-btn.shoo-float {
   position: absolute;
   top: 6px;
-  left: 6px;
+  inset-inline-start: 6px;
   z-index: 3;
   margin: 0;
   background: var(--shoo-bg);
