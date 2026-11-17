@@ -26,6 +26,7 @@ const SUITES = {
     ["identity", "r2"],
     ["channel-name", "r2", { nt: /no link to another channel/ }],
     ["quiet", "r2"],
+    ["grid-lockup", "r3"],
   ],
   long: [
     ["stick", "3", { env: { CYCLES: "6" }, timeoutMs: 60 * 60 * 1000 }],

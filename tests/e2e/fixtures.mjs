@@ -43,3 +43,33 @@ export function watchPage(cards) {
 export async function serve(context, url, html) {
   await context.route(url, (route) => route.fulfill({ status: 200, contentType: "text/html; charset=utf-8", body: html }));
 }
+
+export function gridLockup({ vid, title, handle, name, rest = [], badge = true }) {
+  const parts = rest.map((s, i) => `${i ? '<span aria-hidden="true" class="ytContentMetadataViewModelDelimiter"> • </span>' : '<span class="ytIconWrapperHost ytContentMetadataViewModelLeadingIcon"><svg viewBox="0 0 24 24"></svg></span>'}<span class="ytContentMetadataViewModelMetadataText" dir="auto" role="text">${esc(s)}</span>`).join("");
+  return `<ytd-rich-item-renderer data-qa="${vid}"><div id="content"><yt-lockup-view-model><div>
+  <a href="/watch?v=${vid}" aria-hidden="true" class="thumb">thumb</a>
+  <div class="meta"><a class="avatar" href="/${handle}">av</a><yt-lockup-metadata-view-model><div class="text">
+  <h3 title="${esc(title)}"><a href="/watch?v=${vid}"><span role="text">${esc(title)}</span></a></h3>
+  <yt-content-metadata-view-model><div class="ytContentMetadataViewModelMetadataRow" role="group"><span class="ytContentMetadataViewModelMetadataText" dir="auto" role="text">${esc(name)}</span>${badge ? '<span class="ytIconWrapperHost ytContentMetadataViewModelIcon" aria-label="Verified"><svg viewBox="0 0 24 24"></svg></span>' : ""}${parts}</div></yt-content-metadata-view-model></div>
+  <button class="kebab" aria-label="Action menu">⋮</button></yt-lockup-metadata-view-model></div></div></yt-lockup-view-model></div></ytd-rich-item-renderer>`;
+}
+
+const GRID_STYLE = `<style>
+body{margin:0;font:14px Roboto,Arial}
+ytd-rich-grid-renderer #contents{display:flex;flex-wrap:wrap;gap:16px;padding:16px}
+ytd-rich-item-renderer{display:block;width:537px}
+.thumb{display:block;height:200px;background:#333}
+.meta{display:flex;gap:12px;padding-top:12px}
+.avatar{flex:none;width:36px;height:36px;border-radius:50%;background:#666;font-size:0}
+yt-lockup-metadata-view-model{position:relative;display:block;width:521px}
+yt-lockup-metadata-view-model .text{width:481px}
+h3{margin:0 0 4px;font-size:16px}
+.ytContentMetadataViewModelMetadataRow{display:flex;flex-wrap:nowrap;overflow:hidden;align-items:center;height:20px}
+.ytContentMetadataViewModelMetadataRow>span{display:block;white-space:nowrap;flex:none}
+.ytIconWrapperHost{width:14px;height:14px;margin:0 4px}
+.kebab{position:absolute;top:0;right:0;width:40px;height:40px;border:0;border-radius:50%;background:#444;color:#fff}
+</style>`;
+
+export function gridPage(cards, subtype = "subscriptions") {
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8">${GRID_STYLE}</head><body><ytd-app><ytd-page-manager><ytd-browse page-subtype="${subtype}"><ytd-rich-grid-renderer><div id="contents">${cards.join("\n")}</div></ytd-rich-grid-renderer></ytd-browse></ytd-page-manager></ytd-app></body></html>`;
+}

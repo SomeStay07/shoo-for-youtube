@@ -182,6 +182,18 @@
     return out;
   }
 
+  function nameParts(row) {
+    if (!row) return [];
+    const kids = [...row.children].filter((k) => k.getAttribute("aria-hidden") !== "true" && text(k));
+    if (!kids[0] || kids[0].hasAttribute("aria-label")) return [];
+    const parts = [kids[0]];
+    for (const k of kids.slice(1)) {
+      if (!SEP.test(text(k))) break;
+      parts.push(k);
+    }
+    return parts;
+  }
+
   function nameOf(card) {
     const heading = card.matches("yt-official-card-view-model") && card.querySelector("h1");
     if (heading && text(heading)) return { nameText: text(heading), collab: false };
@@ -189,18 +201,8 @@
     const attributed = card.querySelector("#attributed-channel-name");
     if (attributed && !attributed.hidden && text(attributed)) return { nameText: text(attributed), collab: collab || L.collabNames(text(attributed)).parts.length > 1 };
     for (const node of card.querySelectorAll("ytd-channel-name #text")) if (text(node)) return { nameText: text(node), collab };
-    const row = card.querySelector("yt-content-metadata-view-model [role=group]");
-    if (row) {
-      const kids = [...row.children].filter((k) => k.getAttribute("aria-hidden") !== "true" && text(k));
-      if (kids[0] && !kids[0].hasAttribute("aria-label")) {
-        const parts = [text(kids[0])];
-        for (const k of kids.slice(1)) {
-          if (!SEP.test(text(k))) break;
-          parts.push(text(k));
-        }
-        return { nameText: parts.join(" "), collab: collab || parts.length > 1 };
-      }
-    }
+    const parts = nameParts(card.querySelector("yt-content-metadata-view-model [role=group]"));
+    if (parts.length) return { nameText: parts.map(text).join(" "), collab: collab || parts.length > 1 };
     const author = card.querySelector("#author-text");
     if (author && text(author)) return { nameText: text(author), collab };
     return { nameText: "", collab };
@@ -406,6 +408,12 @@
   function anchorOf(card, box) {
     if (card.matches("yt-lockup-view-model")) {
       const row = card.querySelector("yt-content-metadata-view-model [role=group]");
+      const name = box !== card && nameParts(row).at(-1);
+      if (name) {
+        let after = name;
+        while (after.nextElementSibling?.matches("span[aria-label]:not([role])") && !text(after.nextElementSibling)) after = after.nextElementSibling;
+        return { node: after, kind: "shoo-lockup" };
+      }
       if (row) return { node: row, append: true, kind: "shoo-lockup" };
     }
     const attributed = card.querySelector("#channel-info #attributed-channel-name");
