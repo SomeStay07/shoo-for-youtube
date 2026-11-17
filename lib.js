@@ -387,7 +387,7 @@
   const isSlashRegex = (s) => /^\/.*\/[a-z]*$/.test(s);
   const looksRegex = (s) => /[\\^$*+?()[\]{}|]/.test(s) || /\.[*+?]/.test(s);
 
-  const JSON_START = /^\s*(?:\{\s*(?:"|\}|$)|\[\s*(?:["{[\]\d-]|true\b|false\b|null\b|$))/;
+  const JSON_START = /^\s*(?:[{[]\s*(?:["{[\]}]|$)|\[\s*(?:-?\d[\d.eE+-]*|true|false|null)\s*(?:,|\]\s*$))/;
   const BINARY = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\uFFFD]/g;
   function looksBinary(src) {
     const head = src.slice(0, 8000);
@@ -465,14 +465,14 @@
       out.skipped.patterns += keys(old ? json["2"] : json.blockedChannelsRegExp).length;
       out.skipped.other += keys(old ? json["3"] : json.blockedComments).length;
       out.skipped.other += keys(old ? json["4"] : json.excludedChannels).length;
-    } else if (parsed || JSON_START.test(src) || looksBinary(src)) {
+    } else if ((parsed && json && typeof json === "object") || JSON_START.test(src) || looksBinary(src)) {
       out.format = "unknown";
     } else {
       out.format = "lines";
       for (const line of src.split(/\r?\n/)) {
         const t = line.trim();
         if (!t || t.startsWith("#")) continue;
-        pushChannel(channelFromText(t));
+        pushChannel(channelFromText(/^"[^"]+"$/.test(t) ? t.slice(1, -1) : t));
         if (out.channels.length > IMPORT_MAX_ENTRIES) break;
       }
     }
@@ -695,6 +695,7 @@
     restoreWord,
     editWord,
     parseImport,
+    looksBinary,
     mergeImport,
     undoImport,
     exportList,

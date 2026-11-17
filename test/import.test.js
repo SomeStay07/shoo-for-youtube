@@ -104,11 +104,50 @@ test("readList repairs junk from storage without throwing", () => {
   assert.deepEqual(L.readList({ channels: "x", words: {} }), L.emptyList());
 });
 
-test("JSON that is not one of the known objects imports nothing (arrays, null, numbers, booleans, strings)", () => {
-  for (const text of ['[{"name":"X","id":"y"}]', '["a","b"]', "null", "123", "true", '"Some Channel"']) {
+test("JSON objects and arrays that are not one of the known formats import nothing", () => {
+  for (const text of ['[{"name":"X","id":"y"}]', '["a","b"]', "[1, 2, 3]", "[2024]", "[]", "{}", '{"a": 1}', "[\n  1,\n  2\n]"]) {
     const p = L.parseImport(text);
     assert.equal(p.format, "unknown", text);
     assert.equal(p.channels.length + p.words.length, 0, text);
+  }
+});
+
+test("plain names that look a bit like JSON import as names (a number, a quoted name, names starting with [n])", () => {
+  const cases = [
+    ["1984", ["1984"]],
+    ['"Veritasium"', ["Veritasium"]],
+    ["[2024] Best Of Channel\nSecond", ["[2024] Best Of Channel", "Second"]],
+    ["[1] Channel One\n[2] Channel Two", ["[1] Channel One", "[2] Channel Two"]],
+    ['"Some Channel"\n@next', ["Some Channel", "@next"]],
+    ["123", ["123"]],
+  ];
+  for (const [text, names] of cases) {
+    const p = L.parseImport(text);
+    assert.equal(p.format, "lines", text);
+    assert.deepEqual(p.channels.map((c) => c.name || c.handle), names, text);
+  }
+});
+
+test("every junk import from QA rounds 1 and 2 still imports nothing", () => {
+  const bt = fs.readFileSync(path.join(__dirname, "samples", "blocktube_backup.json"), "utf8");
+  const pretty = JSON.stringify(JSON.parse(bt), null, 2);
+  const cb = fs.readFileSync(path.join(__dirname, "samples", "ChannelBlocker-2026-11-15.save"), "utf8");
+  const cbOld = fs.readFileSync(path.join(__dirname, "samples", "channelblocker-old.save"), "utf8");
+  const junk = [
+    '{"filterData": {"channelId": [',
+    ...[0.2, 0.6, 0.95].map((f) => pretty.slice(0, Math.floor(pretty.length * f))),
+    bt.slice(0, Math.floor(bt.length * 0.5)),
+    cb.slice(0, Math.floor(cb.length * 0.5)),
+    cbOld.slice(0, Math.floor(cbOld.length * 0.5)),
+    "\u0000\u0001binary\u00ff",
+    '  [\n"@a",\n"@b"',
+    "\uFEFF{\"filterData\": {",
+    "[1,",
+  ];
+  for (const text of junk) {
+    const p = L.parseImport(text);
+    assert.equal(p.format, "unknown", JSON.stringify(text.slice(0, 40)));
+    assert.equal(p.channels.length + p.words.length, 0, JSON.stringify(text.slice(0, 40)));
   }
 });
 
