@@ -20,8 +20,9 @@
     async function runFile(file) {
       const { IMPORT_MAX_CHARS, looksBinary } = globalThis.ShooLib;
       if (file.size > IMPORT_MAX_CHARS) {
-        const head = await file.slice(0, 8000).text().catch(() => "\u0000");
-        if (looksBinary(head)) return render({ format: "unknown", found: 0 });
+        const mid = Math.floor(file.size / 2) - 4000;
+        const parts = await Promise.all([0, mid, file.size - 8000].map((at) => file.slice(at, at + 8000).text())).catch(() => ["\u0000"]);
+        if (parts.some((part) => looksBinary(part))) return render({ format: "unknown", found: 0 });
         if (file.size > IMPORT_MAX_CHARS * 4) return render({ format: "too-big", found: 0 });
       }
       return run(await file.text());

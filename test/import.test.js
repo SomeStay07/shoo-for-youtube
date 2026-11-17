@@ -167,6 +167,16 @@ test("binary data over the length cap says nothing was found, not too long", () 
   assert.equal(L.parseImport("@a\n".repeat(1_800_000)).format, "too-big");
 });
 
+test("a long file that starts as text and turns binary later says nothing was found, not too long", () => {
+  const tail = "\u0000\u0001PK\u0003".repeat(2_500_000);
+  assert.equal(L.looksBinary("a".repeat(9000) + tail), true);
+  assert.equal(L.parseImport("a".repeat(9000) + tail).format, "unknown");
+  const mid = "@a\n".repeat(1_000_000) + "\u0000".repeat(20_000) + "@a\n".repeat(1_000_000);
+  assert.equal(L.looksBinary(mid), true, "binary in the middle");
+  assert.equal(L.looksBinary("@a\n".repeat(2_000_000)), false);
+  assert.equal(L.looksBinary("Some channel\n".repeat(150_000) + "\u0000" + "Some channel\n".repeat(450_000)), false, "one stray NUL between the samples stays text");
+});
+
 test("more than 20,000 entries in one import are refused as too big, 20,000 still import", () => {
   const lines = (n) => Array.from({ length: n }, (_, i) => `Channel name ${i}`).join("\n");
   const over = L.parseImport(lines(20_001));

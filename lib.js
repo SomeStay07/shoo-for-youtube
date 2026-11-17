@@ -389,10 +389,14 @@
 
   const JSON_START = /^\s*(?:[{[]\s*(?:["{[\]}]|$)|\[\s*(?:-?\d[\d.eE+-]*|true|false|null)\s*(?:,|\]\s*$))/;
   const BINARY = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\uFFFD]/g;
+  const SAMPLE = 8000;
+  function samples(src) {
+    if (src.length <= SAMPLE * 3) return [src];
+    const mid = Math.floor(src.length / 2 - SAMPLE / 2);
+    return [src.slice(0, SAMPLE), src.slice(mid, mid + SAMPLE), src.slice(-SAMPLE)];
+  }
   function looksBinary(src) {
-    const head = src.slice(0, 8000);
-    if (head.includes("\u0000")) return true;
-    return (head.match(BINARY)?.length || 0) > head.length * 0.1;
+    return samples(String(src)).some((part) => part.includes("\u0000") || (part.match(BINARY)?.length || 0) > part.length * 0.1);
   }
 
   function parseImport(text) {
