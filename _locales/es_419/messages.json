@@ -1,0 +1,287 @@
+{
+  "extName": {
+    "message": "Shoo para YouTube: bloquear canales y palabras clave en títulos"
+  },
+  "extNameShort": {
+    "message": "Shoo para YouTube: bloquear canales"
+  },
+  "extDescription": {
+    "message": "Bloquea canales de YouTube con un clic, en búsquedas y junto al reproductor. También palabras del título. Importa tu lista. Gratis."
+  },
+  "cardHide": {
+    "message": "Ocultar videos de $CHANNEL$",
+    "placeholders": {
+      "channel": {
+        "content": "$1"
+      }
+    }
+  },
+  "cardHideTip": {
+    "message": "Shoo: ocultar videos de $CHANNEL$",
+    "placeholders": {
+      "channel": {
+        "content": "$1"
+      }
+    }
+  },
+  "cardHideCollab": {
+    "message": "Ocultar videos de…"
+  },
+  "cardHidden": {
+    "message": "Shoo ocultó los videos de $CHANNEL$",
+    "placeholders": {
+      "channel": {
+        "content": "$1"
+      }
+    }
+  },
+  "cardNotSaved": {
+    "message": "No se guardó. Recarga la pestaña y prueba otra vez."
+  },
+  "undo": {
+    "message": "Deshacer"
+  },
+  "unhideChannel": {
+    "message": "Dejar de ocultar este canal"
+  },
+  "unhideWord": {
+    "message": "Quitar la palabra de la lista"
+  },
+  "pageHide": {
+    "message": "Ocultar videos de este canal"
+  },
+  "pageHidden": {
+    "message": "Shoo oculta este canal en la búsqueda y junto al reproductor"
+  },
+  "pageBack": {
+    "message": "Volver a los resultados"
+  },
+  "reasonChannel": {
+    "message": "Oculto: canal $CHANNEL$",
+    "placeholders": {
+      "channel": {
+        "content": "$1"
+      }
+    }
+  },
+  "reasonWord": {
+    "message": "Oculto: palabra \"$WORD$\"",
+    "placeholders": {
+      "word": {
+        "content": "$1"
+      }
+    }
+  },
+  "allHidden": {
+    "message": "Shoo ocultó todos los resultados aquí: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "showThem": {
+    "message": "Mostrarlos"
+  },
+  "popupOn": {
+    "message": "Shoo está activo"
+  },
+  "popupCounts": {
+    "message": "Canales: $CHANNELS$ · Palabras: $WORDS$",
+    "placeholders": {
+      "channels": {
+        "content": "$1"
+      },
+      "words": {
+        "content": "$2"
+      }
+    }
+  },
+  "popupShowHidden": {
+    "message": "Mostrar lo oculto en esta página ($COUNT$)",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupNothingHere": {
+    "message": "No hay nada oculto en esta página"
+  },
+  "popupRevealed": {
+    "message": "Los videos ocultos se muestran en esta página"
+  },
+  "popupHideAgain": {
+    "message": "Volver a ocultarlos"
+  },
+  "reloadTab": {
+    "message": "Recarga la pestaña para que Shoo funcione"
+  },
+  "popupEmpty": {
+    "message": "Aún vacío: pasa el cursor por un video y haz clic en ⊘"
+  },
+  "popupManage": {
+    "message": "Editar la lista"
+  },
+  "popupBroken": {
+    "message": "Parece que YouTube cambió algo, y los canales que ocultaste pueden volver a aparecer: $SURFACES$.",
+    "placeholders": {
+      "surfaces": {
+        "content": "$1"
+      }
+    }
+  },
+  "surfaceSearch": {
+    "message": "en la búsqueda"
+  },
+  "surfaceSubs": {
+    "message": "en Suscripciones"
+  },
+  "surfaceHome": {
+    "message": "en Inicio"
+  },
+  "surfaceSidebar": {
+    "message": "junto al reproductor"
+  },
+  "report": {
+    "message": "Informar de un problema"
+  },
+  "knownIssues": {
+    "message": "Fallos conocidos y arreglos"
+  },
+  "titleBroken": {
+    "message": "Shoo: parece que YouTube cambió algo. Ábrelo para ver qué."
+  },
+  "welcomeTitle": {
+    "message": "Oculta un canal una vez y Shoo esconde sus videos en la búsqueda y junto al reproductor"
+  },
+  "welcomeImportFirst": {
+    "message": "Si usabas otro bloqueador, exporta primero tu lista desde él: al quitar la extensión, su lista se borra. Si ya la quitaste, pega en el cuadro enlaces o nombres de canales, uno por línea."
+  },
+  "welcomeStepsBlockTube": {
+    "message": "BlockTube: abre sus ajustes y exporta. Se guarda el archivo blocktube_backup.json."
+  },
+  "welcomeStepsChannelBlocker": {
+    "message": "Channel Blocker: abre sus ajustes, ve a importar y exportar, y exporta tu lista. Se guarda un archivo .save."
+  },
+  "importBox": {
+    "message": "Suelta aquí el archivo o pega la lista"
+  },
+  "importChoose": {
+    "message": "Elegir archivo"
+  },
+  "importAdd": {
+    "message": "Agregar"
+  },
+  "importResult": {
+    "message": "Canales agregados: $CHANNELS$ · palabras: $WORDS$",
+    "placeholders": {
+      "channels": {
+        "content": "$1"
+      },
+      "words": {
+        "content": "$2"
+      }
+    }
+  },
+  "importSkippedPatterns": {
+    "message": "Expresiones regulares omitidas: $COUNT$ (Shoo solo usa palabras simples)",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "importSkippedOther": {
+    "message": "Otras entradas omitidas: $COUNT$ (videos sueltos, filtros de comentarios, excepciones, filtros JavaScript)",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "importIdOnly": {
+    "message": "Canales con ID pero sin nombre: $COUNT$. Shoo aún no los reconoce en la mayoría de los lugares. Si ves un video de uno de ellos, ocúltalo una vez y Shoo recordará el canal.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "importUndo": {
+    "message": "Deshacer la importación"
+  },
+  "importNothing": {
+    "message": "No se encontraron canales ni palabras. Prueba con el archivo exportado de tu bloqueador anterior o con un canal por línea."
+  },
+  "importTooBig": {
+    "message": "Esta lista es demasiado larga. Shoo admite hasta 20.000 canales y palabras a la vez."
+  },
+  "welcomePin": {
+    "message": "Fija Shoo desde el icono de extensiones de la barra. Si Shoo nota que YouTube cambió algo y los canales ocultos pueden volver, el icono de Shoo muestra \"!\"."
+  },
+  "welcomeReloadTabs": {
+    "message": "Recargar pestañas de YouTube ($COUNT$) para que Shoo funcione",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "welcomeReloadDone": {
+    "message": "Listo"
+  },
+  "welcomeHowTo": {
+    "message": "Para ocultar un canal, pasa el cursor por uno de sus videos y haz clic en ⊘. Para agregar palabras o recuperar un canal: menú de Shoo, \"Editar la lista\"."
+  },
+  "welcomeOpenYouTube": {
+    "message": "Abrir YouTube"
+  },
+  "listTitle": {
+    "message": "Canales y palabras ocultos"
+  },
+  "listFilter": {
+    "message": "Buscar en la lista"
+  },
+  "listChannels": {
+    "message": "Canales"
+  },
+  "listWords": {
+    "message": "Palabras"
+  },
+  "listAddWord": {
+    "message": "Agregar una palabra o frase"
+  },
+  "listWordLabel": {
+    "message": "Palabra"
+  },
+  "listWordHint": {
+    "message": "Solo revisa los títulos de los videos. Una palabra oculta también las que empiezan con ella: \"alfa\" oculta \"alfas\". Las de 3 letras o menos cuentan solo completas: \"sol\" no oculta \"soldado\"."
+  },
+  "listAddMany": {
+    "message": "Pegar una lista"
+  },
+  "listImport": {
+    "message": "Importar archivo"
+  },
+  "listExport": {
+    "message": "Exportar a un archivo"
+  },
+  "listRemoved": {
+    "message": "Quitado de la lista: $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
+  },
+  "listIdOnlyRow": {
+    "message": "Aún sin nombre: Shoo no lo reconoce en la mayoría de los lugares. Oculta uno de sus videos una vez y Shoo lo recordará."
+  },
+  "listMisses": {
+    "message": "Junto al reproductor y en las colaboraciones, YouTube muestra solo el nombre del canal, así que Shoo compara por nombre. Ahí puede ocultar otro canal con el mismo nombre y pasar por alto un canal que cambió de nombre hasta ver alguno de sus videos en la búsqueda. Los canales agregados solo por nombre (nombres pegados, importaciones de Channel Blocker, canales ocultados junto al reproductor) se comparan por nombre en todas partes. Si cambian de nombre, Shoo no se entera. Si una colaboración nombra algunos canales y solo cuenta el resto, Shoo no ve los contados. Las playlists y los mixes que abres quedan como están, en la página de la playlist y junto al reproductor. En el estante de Shorts de la búsqueda solo funcionan las palabras."
+  },
+  "listEmpty": {
+    "message": "La lista está vacía. Oculta un canal desde uno de sus videos en YouTube o agrega una palabra arriba."
+  }
+}
