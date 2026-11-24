@@ -2,7 +2,7 @@
 
 Block YouTube channels and title keywords you choose. Imports BlockTube and Channel Blocker lists.
 
-Free, open source (GPL-3.0), Chrome only for now. Version 0.1.0, not published yet.
+Free, open source (GPL-3.0), Chrome only for now. [Install from the Chrome Web Store](https://chromewebstore.google.com/detail/pcihlbcfalicbiclgcfndjhigpeffbcl)
 
 ## What it does
 
